@@ -5,22 +5,22 @@ import java.math.BigDecimal
 import java.util.*
 
 data class ApiResponseSearch(
-    @SerializedName("itineraries") val itineraries: List<ApiResponseItinerary>?,
+    @SerializedName("parsedItineraries") val itineraries: List<ApiResponseItinerary>?,
     @SerializedName("Status") val status: Status
 )
 
 data class ApiResponseItinerary(
     @SerializedName("outboundLeg") val outBoundLeg: ApiResponseLeg,
     @SerializedName("inboundLeg") val inboundLeg: ApiResponseLeg,
-    @SerializedName("pricingOptions") val pricingOptions: List<ApiResponsePricingOptions>
+    @SerializedName("pricingOptions") val pricingOptions: List<ApiResponsePricingOption>
 )
 
-data class ApiResponsePricingOptions(
-    @SerializedName("agents") val agents: List<ApiResponseAgents>,
+data class ApiResponsePricingOption(
+    @SerializedName("agents") val agents: List<ApiResponseAgent>,
     @SerializedName("Price") val price: BigDecimal
 )
 
-data class ApiResponseAgents(
+data class ApiResponseAgent(
     @SerializedName("Id") val id: Int,
     @SerializedName("Name") val name: String,
     @SerializedName("ImageUrl") val imageUrl: String,
@@ -29,8 +29,8 @@ data class ApiResponseAgents(
 
 data class ApiResponseLeg(
     @SerializedName("Id") val id: String,
-    @SerializedName("originStation") val originStation: ApiResponsePlaces,
-    @SerializedName("destinationStation") val destinationStation: ApiResponsePlaces,
+    @SerializedName("originStation") val originStation: ApiResponsePlace,
+    @SerializedName("destinationStation") val destinationStation: ApiResponsePlace,
     @SerializedName("Departure") val departureTime: Date,
     @SerializedName("Arrival") val arrivalTime: Date,
     @SerializedName("carriers") val carriers: List<ApiResponseCarrier>,
@@ -44,8 +44,8 @@ data class ApiResponseLeg(
 
 data class ApiResponseSegment(
     @SerializedName("Id") val id: Int,
-    @SerializedName("originStation") val originStation: ApiResponsePlaces,
-    @SerializedName("destinationStation") val destinationStation: ApiResponsePlaces,
+    @SerializedName("originStation") val originStation: ApiResponsePlace,
+    @SerializedName("destinationStation") val destinationStation: ApiResponsePlace,
     @SerializedName("DepartureDateTime") val departureTime: Date,
     @SerializedName("ArrivalDateTime") val arrivalTime: Date,
     @SerializedName("carrier") val carrier: ApiResponseCarrier,
@@ -64,7 +64,7 @@ data class ApiResponseCarrier(
     @SerializedName("DisplayCode") val displayCode: String
 )
 
-data class ApiResponsePlaces(
+data class ApiResponsePlace(
     @SerializedName("Id") val id: Int,
     @SerializedName("Code") val code: String,
     @SerializedName("Type") val type: String,
@@ -74,4 +74,3 @@ data class ApiResponsePlaces(
 enum class Status {
     UpdatesComplete, UpdatesPending
 }
-

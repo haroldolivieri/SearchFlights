@@ -27,7 +27,7 @@ class SearchFlightsTypeAdapterTestShould {
 
     @Test
     @Parameters(method = "pricingOptions results")
-    fun `parse correct pricingOptions object`(itineraryPosition: Int, pricingOptions: List<ApiResponsePricingOptions>) {
+    fun `parse correct pricingOptions object`(itineraryPosition: Int, pricingOptions: List<ApiResponsePricingOption>) {
         val responseSearch = loadFromFile("response_json_pending.json")
 
         assertThat(
@@ -54,7 +54,7 @@ class SearchFlightsTypeAdapterTestShould {
         const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
         val gsonObject: Gson = GsonBuilder()
-            .registerTypeAdapterFactory(SearchFlightsTypeAdapter())
+            .registerTypeAdapterFactory(SearchFlightsResponseTypeAdapter())
             .setDateFormat(DATE_FORMAT)
             .create()
 
@@ -67,10 +67,10 @@ class SearchFlightsTypeAdapterTestShould {
         @JvmStatic
         private fun `pricingOptions results`(): Array<Array<Any>> {
             val pricingOptionsAtFirstPosition = listOf(
-                ApiResponsePricingOptions(
+                ApiResponsePricingOption(
                     price = 347.82.toBigDecimal(),
                     agents = listOf(
-                        ApiResponseAgents(
+                        ApiResponseAgent(
                             id = 2628363,
                             name = "GotoGate",
                             imageUrl = "https://s1.apideeplink.com/images/websites/gtuk.png",
@@ -80,16 +80,16 @@ class SearchFlightsTypeAdapterTestShould {
                 )
             )
             val pricingOptionsAtSecondPosition = listOf(
-                ApiResponsePricingOptions(
+                ApiResponsePricingOption(
                     price = 293.58.toBigDecimal(),
                     agents = listOf(
-                        ApiResponseAgents(
+                        ApiResponseAgent(
                             id = 2032127,
                             name = "British Airways",
                             imageUrl = "https://s1.apideeplink.com/images/websites/ba__.png",
                             type = "Airline"
                         ),
-                        ApiResponseAgents(
+                        ApiResponseAgent(
                             id = 2628363,
                             name = "GotoGate",
                             imageUrl = "https://s1.apideeplink.com/images/websites/gtuk.png",
@@ -97,10 +97,10 @@ class SearchFlightsTypeAdapterTestShould {
                         )
                     )
                 ),
-                ApiResponsePricingOptions(
+                ApiResponsePricingOption(
                     price = 332.58.toBigDecimal(),
                     agents = listOf(
-                        ApiResponseAgents(
+                        ApiResponseAgent(
                             id = 4499211,
                             name = "Expedia",
                             imageUrl = "https://s1.apideeplink.com/images/websites/xpuk.png",
@@ -108,10 +108,10 @@ class SearchFlightsTypeAdapterTestShould {
                         )
                     )
                 ),
-                ApiResponsePricingOptions(
+                ApiResponsePricingOption(
                     price = 335.58.toBigDecimal(),
                     agents = listOf(
-                        ApiResponseAgents(
+                        ApiResponseAgent(
                             id = 2365707,
                             name = "ebookers",
                             imageUrl = "https://s1.apideeplink.com/images/websites/ebuk.png",
@@ -119,10 +119,10 @@ class SearchFlightsTypeAdapterTestShould {
                         )
                     )
                 ),
-                ApiResponsePricingOptions(
+                ApiResponsePricingOption(
                     price = 395.toBigDecimal(),
                     agents = listOf(
-                        ApiResponseAgents(
+                        ApiResponseAgent(
                             id = 3934928,
                             name = "Kiwi.com",
                             imageUrl = "https://s1.apideeplink.com/images/websites/skyp.png",
@@ -145,13 +145,13 @@ class SearchFlightsTypeAdapterTestShould {
 
             val expectedOutboundLeg = ApiResponseLeg(
                 id = "11235-1903291645--32753-1-13554-1903292205",
-                originStation = ApiResponsePlaces(
+                originStation = ApiResponsePlace(
                     id = 11235,
                     code = "EDI",
                     type = "Airport",
                     name = "Edinburgh"
                 ),
-                destinationStation = ApiResponsePlaces(
+                destinationStation = ApiResponsePlace(
                     id = 13554,
                     code = "LHR",
                     type = "Airport",
@@ -191,13 +191,13 @@ class SearchFlightsTypeAdapterTestShould {
                 segments = listOf(
                     ApiResponseSegment(
                         id = 87,
-                        originStation = ApiResponsePlaces(
+                        originStation = ApiResponsePlace(
                             id = 11235,
                             code = "EDI",
                             type = "Airport",
                             name = "Edinburgh"
                         ),
-                        destinationStation = ApiResponsePlaces(
+                        destinationStation = ApiResponsePlace(
                             id = 11154,
                             code = "DUB",
                             type = "Airport",
@@ -226,13 +226,13 @@ class SearchFlightsTypeAdapterTestShould {
                     ),
                     ApiResponseSegment(
                         id = 88,
-                        originStation = ApiResponsePlaces(
+                        originStation = ApiResponsePlace(
                             id = 11154,
                             code = "DUB",
                             type = "Airport",
                             name = "Dublin"
                         ),
-                        destinationStation = ApiResponsePlaces(
+                        destinationStation = ApiResponsePlace(
                             id = 13554,
                             code = "LHR",
                             type = "Airport",
@@ -264,13 +264,13 @@ class SearchFlightsTypeAdapterTestShould {
 
             val differentOutboundLeg = ApiResponseLeg(
                 id = "11235-1903291645--32753-1-13554-1903292205",
-                originStation = ApiResponsePlaces(
+                originStation = ApiResponsePlace(
                     id = 11235,
                     code = "EDI",
                     type = "Airport",
                     name = "Edinburgh"
                 ),
-                destinationStation = ApiResponsePlaces(
+                destinationStation = ApiResponsePlace(
                     id = 13554,
                     code = "LHR",
                     type = "Airport",
@@ -310,13 +310,13 @@ class SearchFlightsTypeAdapterTestShould {
                 segments = listOf(
                     ApiResponseSegment(
                         id = 87,
-                        originStation = ApiResponsePlaces(
+                        originStation = ApiResponsePlace(
                             id = 11235,
                             code = "EDI",
                             type = "Airport",
                             name = "Edinburgh"
                         ),
-                        destinationStation = ApiResponsePlaces(
+                        destinationStation = ApiResponsePlace(
                             id = 11154,
                             code = "DUB",
                             type = "Airport",
