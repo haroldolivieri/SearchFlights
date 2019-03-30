@@ -7,7 +7,7 @@ data class Itinerary(
     val agentNames: List<String>,
     val outboundLeg: Leg,
     val inboundLeg: Leg,
-    var rating: Float = 0.0.toFloat(),
+    var rating: String = "",
     var cheapest: Boolean = false,
     var shortest: Boolean = false
 )

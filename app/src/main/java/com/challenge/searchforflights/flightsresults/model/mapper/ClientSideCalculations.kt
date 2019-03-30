@@ -29,24 +29,24 @@ private fun Itinerary.calculateRating(
     stopsReference: MinMax<Int>,
     durationReference: MinMax<Int>,
     priceReference: MinMax<BigDecimal>
-): Float {
+): String {
 
     val stopRating = stopsSum().inverseNormalization(
         max = stopsReference.max.toFloat(),
         min = stopsReference.min.toFloat()
-    ) * 10
+    )
 
     val durationRating = durationSum().inverseNormalization(
         max = durationReference.max.toFloat(),
         min = durationReference.min.toFloat()
-    ) * 10
+    )
 
     val priceRating = price.inverseNormalization(
         max = priceReference.max,
         min = priceReference.min
-    ) * 10.toBigDecimal()
+    )
 
-    return (stopRating + durationRating + priceRating.toFloat()) / 3
+    return "%.1f".format((stopRating + durationRating + priceRating.toFloat()) * 10 / 3)
 }
 
 private fun Int.inverseNormalization(max: Float, min: Float): Float {
@@ -67,17 +67,17 @@ private fun List<Itinerary>.getMeasureReferences(): Triple<MinMax<Int>, MinMax<I
     val minStops = minBy { it.stopsSum() }!!.stopsSum()
     val maxStops = maxBy { it.stopsSum() }!!.stopsSum()
 
-    val stopsReference = MinMax(minStops, maxStops)
+    val stopsReference = MinMax(min = minStops, max = maxStops)
 
     val minDuration = minBy { it.durationSum() }!!.durationSum()
     val maxDuration = maxBy { it.durationSum() }!!.durationSum()
 
-    val durationReference = MinMax(minDuration, maxDuration)
+    val durationReference = MinMax(min = minDuration, max = maxDuration)
 
     val minPrice = minBy { it.price }!!.price
-    val maxPrice = minBy { it.price }!!.price
+    val maxPrice = maxBy { it.price }!!.price
 
-    val priceReference = MinMax(minPrice, maxPrice)
+    val priceReference = MinMax(min = minPrice, max = maxPrice)
 
     return Triple(stopsReference, durationReference, priceReference)
 }

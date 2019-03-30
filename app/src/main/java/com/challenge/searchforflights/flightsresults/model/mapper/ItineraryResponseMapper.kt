@@ -31,6 +31,7 @@ class ItineraryResponseMapper {
     private fun ApiResponseCarrier.toCarrier() = Carrier(
         id = id,
         name = name,
+        code = code,
         imageUrl = imageUrl,
         displayCode = displayCode
     )
