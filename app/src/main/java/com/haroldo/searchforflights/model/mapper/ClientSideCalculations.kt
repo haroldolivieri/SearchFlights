@@ -1,6 +1,6 @@
-package com.haroldo.searchforflights.flightsresults.model.mapper
+package com.haroldo.searchforflights.model.mapper
 
-import com.haroldo.searchforflights.flightsresults.model.Itinerary
+import com.haroldo.searchforflights.model.Itinerary
 import java.math.BigDecimal
 
 fun List<Itinerary>.clientSideCalculations() =

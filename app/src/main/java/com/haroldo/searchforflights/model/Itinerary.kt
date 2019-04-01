@@ -1,4 +1,4 @@
-package com.haroldo.searchforflights.flightsresults.model
+package com.haroldo.searchforflights.model
 
 import java.math.BigDecimal
 import java.util.*

@@ -1,9 +1,9 @@
-package com.haroldo.searchforflights.flightsresults.model.mapper
+package com.haroldo.searchforflights.model.mapper
 
-import com.haroldo.searchforflights.flightsresults.model.Carrier
-import com.haroldo.searchforflights.flightsresults.model.Itinerary
-import com.haroldo.searchforflights.flightsresults.model.Leg
-import com.haroldo.searchforflights.flightsresults.model.Place
+import com.haroldo.searchforflights.model.Carrier
+import com.haroldo.searchforflights.model.Itinerary
+import com.haroldo.searchforflights.model.Leg
+import com.haroldo.searchforflights.model.Place
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.text.SimpleDateFormat

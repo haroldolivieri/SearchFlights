@@ -1,6 +1,6 @@
-package com.haroldo.searchforflights.flightsresults.model.jsonparser
+package com.haroldo.searchforflights.model.jsonparser
 
-import com.haroldo.searchforflights.flightsresults.model.api.*
+import com.haroldo.searchforflights.model.api.*
 import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

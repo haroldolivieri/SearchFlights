@@ -1,20 +1,20 @@
 package com.haroldo.searchforflights.flightsresults.interactor
 
-import com.haroldo.searchforflights.flightsresults.model.Itinerary
-import com.haroldo.searchforflights.flightsresults.model.api.ApiResponseItinerary
-import com.haroldo.searchforflights.flightsresults.model.api.ApiResponseSearch
-import com.haroldo.searchforflights.flightsresults.model.api.SearchFlightsApiGateway
-import com.haroldo.searchforflights.flightsresults.model.api.Status
-import com.haroldo.searchforflights.flightsresults.model.mapper.ItineraryResponseMapper
+import com.haroldo.searchforflights.di.FlightsResultScope
+import com.haroldo.searchforflights.flightsresults.gateway.SearchFlightsGateway
+import com.haroldo.searchforflights.model.Itinerary
+import com.haroldo.searchforflights.model.api.Status
+import com.haroldo.searchforflights.model.mapper.ItineraryResponseMapper
 import com.haroldo.searchforflights.request.Event
 import com.haroldo.searchforflights.request.InMemoryCachedRequest
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-//needs scope
-class SearchFlightsInteractor(
-    private val gateway: SearchFlightsApiGateway,
+@FlightsResultScope
+class SearchFlightsInteractor @Inject constructor(
+    private val gateway: SearchFlightsGateway,
     private val mapper: ItineraryResponseMapper
 ) {
 

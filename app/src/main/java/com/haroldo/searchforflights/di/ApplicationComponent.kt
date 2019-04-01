@@ -1,12 +1,29 @@
 package com.haroldo.searchforflights.di
 
-//@Component
-//@ApplicationScope
-//interface ApplicationComponent {
-//    fun inject(app: FlightsApplication)
-//    fun application(): Application
-//}
-//
-//@Scope
-//@Retention(AnnotationRetention.RUNTIME)
-//annotation class ApplicationScope
+import android.app.Application
+import com.haroldo.searchforflights.network.NetworkModule
+import dagger.BindsInstance
+import dagger.Component
+import javax.inject.Scope
+
+@ApplicationScope
+@Component(
+    modules = [
+        ApplicationModule::class,
+        NetworkModule::class
+    ]
+)
+interface ApplicationComponent : FlightsResultSubComponent {
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(application: Application): Builder
+
+        fun build(): ApplicationComponent
+    }
+}
+
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApplicationScope

@@ -1,7 +1,7 @@
-package com.haroldo.searchforflights.flightsresults.model.mapper
+package com.haroldo.searchforflights.model.mapper
 
-import com.haroldo.searchforflights.flightsresults.model.*
-import com.haroldo.searchforflights.flightsresults.model.api.*
+import com.haroldo.searchforflights.model.*
+import com.haroldo.searchforflights.model.api.*
 import com.google.common.truth.Truth.assertThat
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters

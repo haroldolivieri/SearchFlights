@@ -1,4 +1,4 @@
-package com.haroldo.searchforflights.flightsresults.model.api
+package com.haroldo.searchforflights.model.api
 
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal

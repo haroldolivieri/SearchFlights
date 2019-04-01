@@ -1,4 +1,4 @@
-package com.haroldo.searchforflights.flightsresults.model.jsonparser
+package com.haroldo.searchforflights.model.jsonparser
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

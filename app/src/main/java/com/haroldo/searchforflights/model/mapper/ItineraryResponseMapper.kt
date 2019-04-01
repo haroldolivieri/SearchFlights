@@ -1,9 +1,11 @@
-package com.haroldo.searchforflights.flightsresults.model.mapper
+package com.haroldo.searchforflights.model.mapper
 
-import com.haroldo.searchforflights.flightsresults.model.*
-import com.haroldo.searchforflights.flightsresults.model.api.*
+import com.haroldo.searchforflights.model.*
+import com.haroldo.searchforflights.model.api.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ItineraryResponseMapper {
+class ItineraryResponseMapper @Inject constructor() {
 
     fun map(apiResponseItineraries: List<ApiResponseItinerary>) =
         apiResponseItineraries.map { apiResponseItinerary ->

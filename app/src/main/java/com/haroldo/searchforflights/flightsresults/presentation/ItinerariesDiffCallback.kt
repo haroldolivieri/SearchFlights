@@ -1,8 +1,8 @@
-package com.haroldo.searchforflights.presentation
+package com.haroldo.searchforflights.flightsresults.presentation
 
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
-import com.haroldo.searchforflights.flightsresults.model.Itinerary
+import com.haroldo.searchforflights.model.Itinerary
 
 
 const val IS_CHEAPEST = "isCheapest"
