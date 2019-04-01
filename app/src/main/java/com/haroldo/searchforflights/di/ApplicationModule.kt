@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Qualifier
 import javax.inject.Scope
 
@@ -15,6 +17,11 @@ class ApplicationModule {
     @Provides
     @ApplicationScope
     fun provideContext(application: Application): Context = application
+
+    @Provides
+    @IOScheduler
+    @ApplicationScope
+    fun providesScheduler(): Scheduler = Schedulers.io()
 
     @Provides
     @ApplicationScope
@@ -33,3 +40,7 @@ class ApplicationModule {
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ApiKey
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class IOScheduler

@@ -2,10 +2,12 @@ package com.haroldo.searchforflights.network
 
 import com.google.gson.GsonBuilder
 import com.haroldo.searchforflights.di.ApplicationScope
+import com.haroldo.searchforflights.di.IOScheduler
 import com.haroldo.searchforflights.flightsresults.gateway.SearchFlightsGateway
 import com.haroldo.searchforflights.model.jsonparser.SearchFlightsResponseTypeAdapter
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -54,10 +56,14 @@ class NetworkModule {
 
     @Provides
     @ApplicationScope
-    fun provideRetrofit(gsonConverterFactory: GsonConverterFactory, okHttpClient: OkHttpClient): Retrofit =
+    fun provideRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        okHttpClient: OkHttpClient,
+        @IOScheduler scheduler: Scheduler
+    ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(scheduler))
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()

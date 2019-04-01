@@ -1,8 +1,12 @@
 package com.haroldo.searchforflights.request
 
 import io.reactivex.Flowable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
+import io.reactivex.internal.disposables.DisposableHelper
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
@@ -28,7 +32,7 @@ class InMemoryCachedRequest<T>(private val source: Flowable<T>) {
         subscribe(source)
     }
 
-    fun dispose() {
+    private fun dispose() {
         disposable.clear()
     }
 

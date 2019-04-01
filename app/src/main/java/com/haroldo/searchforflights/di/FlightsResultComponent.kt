@@ -28,15 +28,15 @@ class FlightsResultComponentHolder(app: Application) : AndroidViewModel(app) {
             .getCachedComponent()
     }
 
-    private var sub1Component: FlightsResultSubComponent? = null
+    private var component: FlightsResultSubComponent? = null
 
     private fun getCachedComponent(): FlightsResultSubComponent {
-        if (sub1Component == null) {
-            sub1Component = (getApplication<Application>() as FlightsResultComponentProvider)
+        if (component == null) {
+            component = (getApplication<Application>() as FlightsResultComponentProvider)
                 .component()
                 .flightsResultComponent
         }
-        return sub1Component!!
+        return component!!
     }
 }
 

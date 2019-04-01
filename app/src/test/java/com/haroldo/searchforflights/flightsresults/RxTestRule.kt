@@ -13,16 +13,13 @@ import org.junit.runners.model.Statement
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
-
-class RxTestRule(private val scheduler: Scheduler = Schedulers.trampoline()) : TestRule {
+class RxTestRule : TestRule {
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             @Throws(Throwable::class)
             override fun evaluate() {
-
-                overrideSchedulers(scheduler)
-                RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+                overrideSchedulers(Schedulers.trampoline())
 
                 try {
                     base.evaluate()
@@ -35,10 +32,10 @@ class RxTestRule(private val scheduler: Scheduler = Schedulers.trampoline()) : T
     }
 
     private fun overrideSchedulers(scheduler: Scheduler) {
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler }
         RxJavaPlugins.setInitIoSchedulerHandler { scheduler }
         RxJavaPlugins.setInitComputationSchedulerHandler { scheduler }
         RxJavaPlugins.setInitNewThreadSchedulerHandler { scheduler }
         RxJavaPlugins.setInitSingleSchedulerHandler { scheduler }
     }
-
 }
