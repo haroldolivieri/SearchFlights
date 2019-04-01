@@ -13,7 +13,7 @@ import javax.inject.Scope
         NetworkModule::class
     ]
 )
-interface ApplicationComponent : FlightsResultSubComponent {
+interface ApplicationComponent : FlightsResultComponent {
 
     @Component.Builder
     interface Builder {

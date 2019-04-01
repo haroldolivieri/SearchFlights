@@ -11,12 +11,12 @@ import javax.inject.Scope
 
 @FlightsResultScope
 @Subcomponent
-interface FlightsResultComponent {
+interface FlightsResultSubComponent {
     fun inject(activity: MainActivity)
 }
 
-interface FlightsResultSubComponent {
-    val flightsResultComponent: FlightsResultComponent
+interface FlightsResultComponent {
+    val flightsResultComponent: FlightsResultSubComponent
 }
 
 class FlightsResultComponentHolder(app: Application) : AndroidViewModel(app) {
@@ -25,12 +25,19 @@ class FlightsResultComponentHolder(app: Application) : AndroidViewModel(app) {
         fun getComponent(activity: FragmentActivity) = ViewModelProviders
             .of(activity)
             .get(FlightsResultComponentHolder::class.java)
-            .component
-            .flightsResultComponent
+            .getCachedComponent()
     }
 
-    private val component =
-        (app as FlightsResultComponentProvider).component()
+    private var sub1Component: FlightsResultSubComponent? = null
+
+    private fun getCachedComponent(): FlightsResultSubComponent {
+        if (sub1Component == null) {
+            sub1Component = (getApplication<Application>() as FlightsResultComponentProvider)
+                .component()
+                .flightsResultComponent
+        }
+        return sub1Component!!
+    }
 }
 
 @Scope

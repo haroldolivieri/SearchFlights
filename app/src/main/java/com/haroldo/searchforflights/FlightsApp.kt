@@ -3,7 +3,7 @@ package com.haroldo.searchforflights
 import android.app.Application
 import com.haroldo.searchforflights.di.ApplicationComponent
 import com.haroldo.searchforflights.di.DaggerApplicationComponent
-import com.haroldo.searchforflights.di.FlightsResultSubComponent
+import com.haroldo.searchforflights.di.FlightsResultComponent
 
 class FlightsApp : Application(), FlightsResultComponentProvider {
 
@@ -15,13 +15,13 @@ class FlightsApp : Application(), FlightsResultComponentProvider {
             .build()
     }
 
-    override fun component(): FlightsResultSubComponent = applicationComponent
+    override fun component(): FlightsResultComponent = applicationComponent
 
-    companion object {
+    private companion object {
         lateinit var applicationComponent: ApplicationComponent
     }
 }
 
-interface  FlightsResultComponentProvider {
-    fun component(): FlightsResultSubComponent
+interface FlightsResultComponentProvider {
+    fun component(): FlightsResultComponent
 }
