@@ -6,6 +6,7 @@ import com.haroldo.searchforflights.flightsresults.gateway.SearchFlightsGateway
 import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.model.api.Status
 import com.haroldo.searchforflights.model.mapper.ItineraryResponseMapper
+import com.haroldo.searchforflights.model.mapper.clientSideCalculations
 import com.haroldo.searchforflights.request.Event
 import com.haroldo.searchforflights.request.InMemoryCachedRequest
 import io.reactivex.Flowable
@@ -38,7 +39,7 @@ class SearchFlightsInteractor @Inject constructor(
             .fetchSearchFlightsResult()
             .repeatWhen { it.delay(1, TimeUnit.SECONDS, scheduler) }
             .takeUntil { it.status == Status.UpdatesComplete }
-            .map { mapper.map(it.itineraries) }
+            .map { mapper.map(it.itineraries).clientSideCalculations() }
     }
 }
 
