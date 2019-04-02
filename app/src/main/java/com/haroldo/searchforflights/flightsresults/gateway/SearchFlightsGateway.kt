@@ -1,6 +1,6 @@
 package com.haroldo.searchforflights.flightsresults.gateway
 
-import com.haroldo.searchforflights.di.FlightsResultScope
+import com.haroldo.searchforflights.model.SearchQuery
 import com.haroldo.searchforflights.model.api.ApiResponseSearch
 import com.haroldo.searchforflights.network.PollingUrlProvider
 import io.reactivex.Completable
@@ -8,13 +8,28 @@ import io.reactivex.Single
 import retrofit2.http.*
 import javax.inject.Inject
 
-@FlightsResultScope
 class SearchFlightsGateway @Inject constructor(
     private val api: Api,
     private val poolingUrlProvider: PollingUrlProvider
 ) {
 
-//    fun createSearchFlightsSession(api) = api.createSession()
+    fun createSearchFlightsSession(query: SearchQuery) =
+        with(query) {
+            api.createSession(
+                cabinClass = cabinClass,
+                country = country,
+                currency = currency,
+                locale = locale,
+                locationSchema = "sky",
+                originPlace = originPlace,
+                destinationPlace = destinationPlace,
+                outboundDate = outboundDate,
+                inboundDate = inboundDate,
+                adults = adults,
+                children = children,
+                infants = infants
+            )
+        }
 
     fun fetchSearchFlightsResult() = api.poolingResults(poolingUrlProvider.get())
 

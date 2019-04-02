@@ -1,5 +1,6 @@
 package com.haroldo.searchforflights.request
 
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -11,10 +12,9 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 
-class InMemoryCachedRequest<T>(private val source: Flowable<T>) {
+class InMemoryCompletableRequest(private val source: Completable) {
 
-    private val initialState: Event<T> =
-        Event.loading()
+    private val initialState: Event<Unit> = Event.loading()
     private val eventsSubject = BehaviorSubject.createDefault(initialState)
     private val isInitialState: Boolean get() = eventsSubject.value === initialState
 
@@ -32,20 +32,18 @@ class InMemoryCachedRequest<T>(private val source: Flowable<T>) {
         subscribe(source)
     }
 
-    private fun dispose() {
+    fun dispose() {
         disposable.clear()
     }
 
-    private fun subscribe(source: Flowable<T>) {
+    private fun subscribe(source: Completable) {
         source
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { onLoading() }
             .subscribe({
-                onData(it)
+                onCompletedWithoutData()
             }, {
                 onError(it)
-            }, {
-                eventsSubject.value?.data?.let { onCompleteWith(it) }
             }).addTo(disposable)
     }
 
@@ -53,12 +51,8 @@ class InMemoryCachedRequest<T>(private val source: Flowable<T>) {
         eventsSubject.onNext(Event.loading())
     }
 
-    private fun onData(data: T) {
-        eventsSubject.onNext(Event.data(data))
-    }
-
-    private fun onCompleteWith(data: T) {
-        eventsSubject.onNext(Event.completedWith(data))
+    private fun onCompletedWithoutData() {
+        eventsSubject.onNext(Event.completedWithoutData())
     }
 
     private fun onError(throwable: Throwable) {

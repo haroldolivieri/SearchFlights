@@ -1,5 +1,6 @@
 package com.haroldo.searchforflights.flightsresults.presentation
 
+import com.haroldo.searchforflights.flightsresults.interactor.CreateSessionInteractor
 import com.haroldo.searchforflights.flightsresults.interactor.SearchFlightsInteractor
 import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.request.Event
@@ -9,17 +10,22 @@ import org.junit.Test
 
 class FlightsResultPresenterTestShould {
 
-    private val subject = BehaviorSubject.create<Event<List<Itinerary>>>()
-    private val interactor: SearchFlightsInteractor = mock {
-        on { events() }.thenReturn(subject)
+    private val subjectSession = BehaviorSubject.create<Event<Unit>>()
+    private val createSessionInteractor: CreateSessionInteractor = mock {
+        on { events(any()) }.thenReturn(subjectSession)
+    }
+
+    private val subjectResults = BehaviorSubject.create<Event<List<Itinerary>>>()
+    private val resultsInteractor: SearchFlightsInteractor = mock {
+        on { events() }.thenReturn(subjectResults)
     }
 
     private val view: FlightsResultView = mock()
-    private val presenter = FlightsResultPresenter(interactor)
+    private val presenter = FlightsResultPresenter(resultsInteractor, createSessionInteractor)
 
     @Test
     fun `show loading when loading event received`() {
-        subject.onNext(Event.loading())
+        subjectSession.onNext(Event.loading())
 
         presenter.onAttach(view)
 
@@ -27,40 +33,78 @@ class FlightsResultPresenterTestShould {
     }
 
     @Test
-    fun `hide loading and show error when error event received`() {
+    fun `hide loading and show create session error when error event received from session interactor`() {
         presenter.onAttach(view)
 
-        subject.onNext(Event.error(Throwable()))
+        subjectSession.onNext(Event.error(Throwable()))
 
         verify(view).hideLoading()
-        verify(view).showGenericError()
+        verify(view).showCreateSessionError()
     }
 
     @Test
-    fun `hide loading and show data when completed event received`() {
+    fun `do not hide loading after completed event received from session interactor`() {
         presenter.onAttach(view)
 
-        subject.onNext(Event.completedWith(itineraries))
+        subjectSession.onNext(Event.completedWithoutData())
 
-        verify(view).hideLoading()
-        verify(view).updateItems(eq(itineraries), any())
+        verify(view, never()).hideLoading()
     }
 
     @Test
-    fun `show data when completed data event received`() {
+    fun `not show loading when not subscribed yet`() {
+        subjectResults.onNext(Event.loading())
+
         presenter.onAttach(view)
 
-        subject.onNext(Event.data(itineraries))
+        verify(view, never()).showLoading()
+    }
+
+    @Test
+    fun `hide loading and show results error when error event received from search flights interactor`() {
+        presenter.onAttach(view)
+
+        subjectSession.onNext(Event.completedWithoutData())
+        subjectResults.onNext(Event.error(Throwable()))
+
+        verify(view).hideLoading()
+        verify(view).showFetchResultsError()
+    }
+
+    @Test
+    fun `do not hide loading and update items after data event received from search flights interactor`() {
+        presenter.onAttach(view)
+
+        subjectSession.onNext(Event.completedWithoutData())
+        subjectResults.onNext(Event.data(itineraries))
 
         verify(view, never()).hideLoading()
         verify(view).updateItems(eq(itineraries), any())
     }
 
     @Test
-    fun `call retry on interactor when retry is called`() {
-        presenter.retry()
+    fun `hide loading and update items after data completed with data event received from search flights interactor`() {
+        presenter.onAttach(view)
 
-        verify(interactor).retry()
+        subjectSession.onNext(Event.completedWithoutData())
+        subjectResults.onNext(Event.completedWith(itineraries))
+
+        verify(view).hideLoading()
+        verify(view).updateItems(eq(itineraries), any())
+    }
+
+    @Test
+    fun `call retry on create interactor when retrySession is called`() {
+        presenter.retrySession()
+
+        verify(createSessionInteractor).retry()
+    }
+
+    @Test
+    fun `call retry on search flights interactor when retryFetchResults is called`() {
+        presenter.retryFetchResults()
+
+        verify(resultsInteractor).retry()
     }
 
     private val itineraries = listOf(

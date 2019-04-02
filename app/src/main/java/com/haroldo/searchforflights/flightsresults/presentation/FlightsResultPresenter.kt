@@ -1,19 +1,25 @@
 package com.haroldo.searchforflights.flightsresults.presentation
 
-import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 import com.haroldo.searchforflights.diffCallback
+import com.haroldo.searchforflights.flightsresults.interactor.CreateSessionInteractor
 import com.haroldo.searchforflights.flightsresults.interactor.SearchFlightsInteractor
 import com.haroldo.searchforflights.model.Itinerary
-import com.haroldo.searchforflights.request.Event
+import com.haroldo.searchforflights.model.SearchQuery
+import com.haroldo.searchforflights.request.reducer
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import org.joda.time.DateTimeConstants
+import org.joda.time.LocalDate
 import javax.inject.Inject
 
 
+private const val DATE_FORMAT = "yyyy-MM-dd"
+
 class FlightsResultPresenter @Inject constructor(
-    private val interactor: SearchFlightsInteractor
+    private val resultsInteractor: SearchFlightsInteractor,
+    private val sessionInteractor: CreateSessionInteractor
 ) {
 
     private var view: FlightsResultView? = null
@@ -23,68 +29,78 @@ class FlightsResultPresenter @Inject constructor(
     fun onAttach(view: FlightsResultView) {
         this.view = view
 
-        val events = interactor.events().share()
-
-        with(events) {
-            subscribeToLoadingEvents(filter { it.isLoading })
-            subscribeToErrorEvents(filter { it.isError })
-            subscribeToDataArrivedEvents(filter { it.hasData })
-            subscribeToCompletedEvents(filter { it.isCompletedWithData })
-        }
+        sessionInteractor.events(createMockedSearchQuery()).subscribe {
+            view.run {
+                it.reducer(
+                    onLoading = { showLoading() },
+                    onError = {
+                        hideLoading()
+                        showCreateSessionError()
+                    },
+                    onCompleted = { fetchResults() }
+                )
+            }
+        }.addTo(disposables)
     }
 
-    fun retry() {
-        interactor.retry()
+    fun retrySession() {
+        sessionInteractor.retry()
     }
 
-    fun onDettach() {
+    fun retryFetchResults() {
+        resultsInteractor.retry()
+    }
+
+    fun onDetach() {
         this.view = null
         disposables.clear()
     }
 
-    private fun subscribeToLoadingEvents(events: Observable<Event<List<Itinerary>>>) {
-        events
-            .subscribe { view?.showLoading() }
-            .addTo(disposables)
+    private fun fetchResults() {
+        resultsInteractor.events().subscribe { event ->
+            view?.run {
+                event.reducer(
+                    onLoading = { showLoading() },
+                    onError = {
+                        hideLoading()
+                        showFetchResultsError()
+                    },
+                    onDataArrived = { calculateDiff(event.data!!) },
+                    onCompleted = {
+                        hideLoading()
+                        calculateDiff(event.data!!)
+                    }
+                )
+            }
+        }.addTo(disposables)
     }
 
-    @SuppressLint("CheckResult")
-    private fun subscribeToErrorEvents(events: Observable<Event<List<Itinerary>>>) {
-        view?.run {
-            events.subscribe {
-                hideLoading()
-                showGenericError()
-            }.addTo(disposables)
-        }
-    }
-
-    private fun subscribeToDataArrivedEvents(events: Observable<Event<List<Itinerary>>>) {
-        events.renderListWithDiff()
-    }
-
-    private fun subscribeToCompletedEvents(events: Observable<Event<List<Itinerary>>>) {
-        events
-            .doOnNext { view?.hideLoading() }
-            .renderListWithDiff()
-    }
-
-    @SuppressLint("CheckResult")
-    private fun Observable<Event<List<Itinerary>>>.renderListWithDiff() {
-        map { it.data!! }
+    private fun calculateDiff(data: List<Itinerary>) {
+        Observable.just(data)
             .diffCallback { oldItems, newItems ->
                 ItinerariesDiffCallback(oldItineraries = oldItems, newItineraries = newItems)
-            }
-            .subscribe { (newItems, diffResult) ->
+            }.subscribe { (newItems, diffResult) ->
                 view?.updateItems(newItems, diffResult!!)
             }.addTo(disposables)
+    }
+
+
+    private fun createMockedSearchQuery(): SearchQuery {
+        val nextMonday = LocalDate().withDayOfWeek(DateTimeConstants.MONDAY)
+        val outboundDate = nextMonday.toString(DATE_FORMAT)
+        val inboundDate = nextMonday.plusDays(1).toString(DATE_FORMAT)
+
+        return SearchQuery(
+            outboundDate = outboundDate,
+            inboundDate = inboundDate
+        )
     }
 }
 
 interface FlightsResultView {
     fun showLoading()
     fun hideLoading()
-    fun showGenericError()
+    fun showCreateSessionError()
+    fun showFetchResultsError()
     fun updateItems(newItems: List<Itinerary>, diffResult: DiffUtil.DiffResult)
-    //recyclerViewAdapter.updateItems(pair.items);
-    //pair.diffResult.dispatchUpdatesTo(recyclerViewAdapter);
 }

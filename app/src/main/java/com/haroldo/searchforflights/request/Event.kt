@@ -6,13 +6,16 @@ data class Event<T>(val type: Type, val data: T?, val error: Throwable?) {
         fun <T> loading() = Event<T>(Type.LOADING, null, null)
 
         @JvmStatic
-        fun <T> data(data: T) = Event(Type.HAS_DATA, data, null)
+        fun <T> data(data: T) = Event(Type.IDLE, data, null)
 
         @JvmStatic
         fun <T> error(error: Throwable): Event<T> = Event(Type.ERROR, null, error)
 
         @JvmStatic
         fun <T> completedWith(data: T): Event<T> = Event(Type.COMPLETED, data, null)
+
+        @JvmStatic
+        fun completedWithoutData(): Event<Unit> = Event(Type.COMPLETED, null, null)
     }
 
     val isLoading: Boolean
@@ -22,12 +25,26 @@ data class Event<T>(val type: Type, val data: T?, val error: Throwable?) {
         get() = type == Type.ERROR
 
     val hasData: Boolean
-        get() = type == Type.HAS_DATA
+        get() = type == Type.IDLE
 
-    val isCompletedWithData: Boolean
+    val isCompletedData: Boolean
         get() = type == Type.COMPLETED
 
     enum class Type {
-        LOADING, HAS_DATA, ERROR, COMPLETED
+        LOADING, IDLE, ERROR, COMPLETED
+    }
+}
+
+inline fun <T> Event<T>.reducer(
+    onLoading: () -> Unit = {},
+    onError: () -> Unit = {},
+    onDataArrived: (data: T) -> Unit = {},
+    onCompleted: (data : T?) -> Unit = {}
+) {
+    when (type) {
+        Event.Type.LOADING -> { onLoading() }
+        Event.Type.ERROR -> { onError() }
+        Event.Type.IDLE -> { onDataArrived(data!!)}
+        Event.Type.COMPLETED -> { onCompleted(data)}
     }
 }

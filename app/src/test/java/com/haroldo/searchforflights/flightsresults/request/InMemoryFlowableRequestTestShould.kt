@@ -3,20 +3,20 @@ package com.haroldo.searchforflights.flightsresults.request
 import com.google.common.truth.Truth.assertThat
 import com.haroldo.searchforflights.flightsresults.RxTestRule
 import com.haroldo.searchforflights.request.Event
-import com.haroldo.searchforflights.request.InMemoryCachedRequest
+import com.haroldo.searchforflights.request.InMemoryFlowableRequest
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
 import org.junit.Rule
 import org.junit.Test
 
-class InMemoryCachedRequestTestShould {
+class InMemoryFlowableRequestTestShould {
 
     @Rule
     @JvmField
     val rule = RxTestRule()
 
-    private val request = InMemoryCachedRequest(getFlowable())
+    private val request = InMemoryFlowableRequest(getFlowable())
     private lateinit var emitter: FlowableEmitter<List<Int>>
     private var subscriptionCounter = 0
     private val error = Throwable("error")

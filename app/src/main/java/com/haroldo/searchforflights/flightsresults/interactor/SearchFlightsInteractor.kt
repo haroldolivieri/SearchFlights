@@ -7,11 +7,14 @@ import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.model.api.Status
 import com.haroldo.searchforflights.model.mapper.ItineraryResponseMapper
 import com.haroldo.searchforflights.model.mapper.clientSideCalculations
+import com.haroldo.searchforflights.network.PollingUrlProvider
 import com.haroldo.searchforflights.request.Event
-import com.haroldo.searchforflights.request.InMemoryCachedRequest
+import com.haroldo.searchforflights.request.InMemoryFlowableRequest
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -19,14 +22,25 @@ import javax.inject.Inject
 class SearchFlightsInteractor @Inject constructor(
     private val gateway: SearchFlightsGateway,
     private val mapper: ItineraryResponseMapper,
-    @IOScheduler private val scheduler: Scheduler
+    @IOScheduler private val scheduler: Scheduler,
+    private val pollingUrlProvider: PollingUrlProvider
 ) {
 
-    private var request: InMemoryCachedRequest<List<Itinerary>>? = null
+    private val disposables = CompositeDisposable()
+
+    init {
+        pollingUrlProvider
+            .pollingUrlChanges()
+            .subscribe {
+                request?.retry()
+            }.addTo(disposables)
+    }
+
+    private var request: InMemoryFlowableRequest<List<Itinerary>>? = null
 
     fun events(): Observable<Event<List<Itinerary>>> {
         if (request == null) {
-            request = InMemoryCachedRequest(source())
+            request = InMemoryFlowableRequest(source())
         }
 
         return request!!.events()
@@ -39,7 +53,9 @@ class SearchFlightsInteractor @Inject constructor(
             .fetchSearchFlightsResult()
             .repeatWhen { it.delay(1, TimeUnit.SECONDS, scheduler) }
             .takeUntil { it.status == Status.UpdatesComplete }
-            .map { mapper.map(it.itineraries).clientSideCalculations() }
+            .map { mapper.map(it.itineraries) }
+            .filter { !it.isEmpty() }
+            .map { itineraries -> itineraries.clientSideCalculations().sortedBy { it.price } }
     }
 }
 
