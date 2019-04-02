@@ -23,7 +23,7 @@ class SearchFlightsInteractor @Inject constructor(
     private val gateway: SearchFlightsGateway,
     private val mapper: ItineraryResponseMapper,
     @IOScheduler private val scheduler: Scheduler,
-    private val pollingUrlProvider: PollingUrlProvider
+    pollingUrlProvider: PollingUrlProvider
 ) {
 
     private val disposables = CompositeDisposable()

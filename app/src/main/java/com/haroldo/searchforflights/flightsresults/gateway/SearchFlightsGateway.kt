@@ -1,5 +1,6 @@
 package com.haroldo.searchforflights.flightsresults.gateway
 
+import com.haroldo.searchforflights.di.ApiKey
 import com.haroldo.searchforflights.model.SearchQuery
 import com.haroldo.searchforflights.model.api.ApiResponseSearch
 import com.haroldo.searchforflights.network.PollingUrlProvider
@@ -10,6 +11,7 @@ import javax.inject.Inject
 
 class SearchFlightsGateway @Inject constructor(
     private val api: Api,
+    @ApiKey private val apiKey: String,
     private val poolingUrlProvider: PollingUrlProvider
 ) {
 
@@ -27,14 +29,15 @@ class SearchFlightsGateway @Inject constructor(
                 inboundDate = inboundDate,
                 adults = adults,
                 children = children,
-                infants = infants
+                infants = infants,
+                apiKey = apiKey
             )
         }
 
     fun fetchSearchFlightsResult() = api.poolingResults(poolingUrlProvider.get())
 
     interface Api {
-        @POST("/pricing/v1.0")
+        @POST("pricing/v1.0")
         @FormUrlEncoded
         fun createSession(
             @Field("cabinclass") cabinClass: String,
@@ -48,7 +51,8 @@ class SearchFlightsGateway @Inject constructor(
             @Field("inbounddate") inboundDate: String,
             @Field("adults") adults: Int,
             @Field("children") children: Int,
-            @Field("infants") infants: Int
+            @Field("infants") infants: Int,
+            @Field("apiKey") apiKey: String
         ): Completable
 
         @GET

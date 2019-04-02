@@ -8,8 +8,8 @@ import com.haroldo.searchforflights.model.jsonparser.SearchFlightsResponseTypeAd
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,13 +33,21 @@ class NetworkModule {
 
     @Provides
     @ApplicationScope
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return interceptor
+    }
+
+    @Provides
+    @ApplicationScope
     fun provideOkHttpClientBuilder(
         headersInterceptor: HeadersInterceptor,
-        addApiKeyInterceptor: AddApiKeyInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient.Builder =
         OkHttpClient().newBuilder()
             .addInterceptor(headersInterceptor)
-            .addInterceptor(addApiKeyInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
             .readTimeout(TIMEOUT, TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
 

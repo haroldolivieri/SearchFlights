@@ -27,10 +27,9 @@ class FlightsResultAdapter @Inject constructor(
         diffResult: DiffUtil.DiffResult,
         onItemClick: (Itinerary) -> Unit
     ) {
-        diffResult.dispatchUpdatesTo(this)
-
         this.items = items
         this.onItemClick = onItemClick
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightsResultViewHolder {

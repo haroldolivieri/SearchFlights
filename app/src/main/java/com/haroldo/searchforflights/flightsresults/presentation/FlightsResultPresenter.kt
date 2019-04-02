@@ -86,13 +86,17 @@ class FlightsResultPresenter @Inject constructor(
 
 
     private fun createMockedSearchQuery(): SearchQuery {
-        val nextMonday = LocalDate().withDayOfWeek(DateTimeConstants.MONDAY)
+
+        val today = LocalDate.now()
+        val old = today.dayOfWeek
+        val nextMonday = today.plusDays(8 - old)
+
         val outboundDate = nextMonday.toString(DATE_FORMAT)
         val inboundDate = nextMonday.plusDays(1).toString(DATE_FORMAT)
 
         return SearchQuery(
-            outboundDate = outboundDate,
-            inboundDate = inboundDate
+            outboundDate = "2019-04-02",
+            inboundDate = "2019-04-04"
         )
     }
 }
