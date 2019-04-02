@@ -5,16 +5,22 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    
-    <style name="TextMedium" >
+
+    <style name="TextMedium">
         <item name="android:textColor">@color/colorTextMedium</item>
         <item name="android:textSize">@dimen/textMedium</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextSmall" >
+    <style name="TextSmall">
         <item name="android:textColor">@color/colorTextSmall</item>
         <item name="android:textSize">@dimen/textSmall</item>
+    </style>
+
+    <style name="TextExtraInfo">
+        <item name="android:textColor">@color/colorGreen</item>
+        <item name="android:textSize">@dimen/textSmall</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

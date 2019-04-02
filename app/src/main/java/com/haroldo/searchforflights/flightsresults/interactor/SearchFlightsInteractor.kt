@@ -54,8 +54,13 @@ class SearchFlightsInteractor @Inject constructor(
             .repeatWhen { it.delay(1, TimeUnit.SECONDS, scheduler) }
             .takeUntil { it.status == Status.UpdatesComplete }
             .map { mapper.map(it.itineraries) }
-            .filter { !it.isEmpty() }
-            .map { itineraries -> itineraries.clientSideCalculations().sortedBy { it.price } }
+            .map { itineraries ->
+                return@map if (!itineraries.isEmpty()) {
+                    itineraries.clientSideCalculations().sortedBy { it.price }
+                } else {
+                    itineraries
+                }
+            }
     }
 }
 

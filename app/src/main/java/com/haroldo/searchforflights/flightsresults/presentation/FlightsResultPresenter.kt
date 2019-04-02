@@ -8,8 +8,11 @@ import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.model.SearchQuery
 import com.haroldo.searchforflights.request.reducer
 import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
 import javax.inject.Inject
@@ -77,13 +80,14 @@ class FlightsResultPresenter @Inject constructor(
 
     private fun calculateDiff(data: List<Itinerary>) {
         Observable.just(data)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .diffCallback { oldItems, newItems ->
                 ItinerariesDiffCallback(oldItineraries = oldItems, newItineraries = newItems)
             }.subscribe { (newItems, diffResult) ->
                 view?.updateItems(newItems, diffResult!!)
             }.addTo(disposables)
     }
-
 
     private fun createMockedSearchQuery(): SearchQuery {
 
@@ -95,7 +99,7 @@ class FlightsResultPresenter @Inject constructor(
         val inboundDate = nextMonday.plusDays(1).toString(DATE_FORMAT)
 
         return SearchQuery(
-            outboundDate = "2019-04-02",
+            outboundDate = "2019-04-03",
             inboundDate = "2019-04-04"
         )
     }

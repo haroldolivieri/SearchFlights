@@ -4,7 +4,8 @@ import androidx.annotation.DrawableRes
 import com.haroldo.searchforflights.R
 import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.model.Leg
-import org.joda.time.LocalTime
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
 
@@ -27,13 +28,9 @@ class ItinerariesItemPresenter @Inject constructor() {
                 setRating(rating, getRatingResource(rating))
                 setPrice("£ $price")
 
-                if (cheapest) {
-
-                }
-
-                if (shortest) {
-
-                }
+                setupCheapest(cheapest)
+                setupShortest(shortest)
+                setAgent("Via ${agentNames[0]}")
             }
         }
     }
@@ -50,9 +47,12 @@ class ItinerariesItemPresenter @Inject constructor() {
     }
 
     private fun getDepartureArrivalTimeByLeg(leg: Leg): String {
-        val departureHour = LocalTime(leg.departureTime).hourOfDay().asText
-        val arrivalHour = LocalTime(leg.arrivalTime).hourOfDay().asText
-        return "$departureHour - $arrivalHour"
+        val formatter = DateTimeFormat.forPattern("HH:mm")
+
+        val departure = DateTime(leg.departureTime)
+        val arrival = DateTime(leg.arrivalTime)
+
+        return "${formatter.print(departure)} - ${formatter.print(arrival)}"
     }
 
     private fun getRatingResource(rating: String) =
@@ -73,11 +73,24 @@ class ItinerariesItemPresenter @Inject constructor() {
         return "${hours}h ${minutesRemaining}m"
     }
 
-    fun updateCheapest(cheapest: Boolean) {
-
+    fun setupCheapest(cheapest: Boolean) {
+        view?.run {
+            if (cheapest) {
+                setCheapestVisibility(true)
+            } else {
+                setCheapestVisibility(false)
+            }
+        }
     }
 
-    fun updateShortest(shortest: Boolean) {
+    fun setupShortest(shortest: Boolean) {
+        view?.run {
+            if (shortest) {
+                changeShortestVisibility(true)
+            } else {
+                changeShortestVisibility(false)
+            }
+        }
     }
 
     fun updateRating(rating: String) {
@@ -92,7 +105,8 @@ interface ItinerariesItemView {
     fun setType(typeOut: String, typeIn: String)
     fun setDuration(durationOut: String, durationIn: String)
     fun setRating(rating: String, @DrawableRes ratingImage: Int)
-
+    fun setCheapestVisibility(visible: Boolean)
+    fun changeShortestVisibility(visible: Boolean)
     fun setAgent(agentStr: String)
     fun setPrice(priceStr: String)
 }

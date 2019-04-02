@@ -11,10 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_16"
-        android:textColor="@android:color/primary_text_light"
-        android:textStyle="bold"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/carrierLogo"
-        app:layout_constraintTop_toTopOf="@+id/carrierLogo"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="15:35 - 17:00" />
 
     <TextView
@@ -22,20 +21,20 @@
         style="@style/TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/carrierLogo"
         app:layout_constraintStart_toStartOf="@+id/departureAndArrivalTime"
         app:layout_constraintTop_toBottomOf="@+id/departureAndArrivalTime"
-        app:layout_constraintVertical_bias="1.0"
         tools:text="BUG - LGW, Wizz Air" />
 
     <ImageView
-            android:id="@+id/carrierLogo"
-            android:layout_width="@dimen/carrierLogo"
-            android:layout_height="@dimen/carrierLogo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:contentDescription="@string/leg_carrier_image_description"/>
+        android:id="@+id/carrierLogo"
+        android:layout_width="@dimen/carrierLogo"
+        android:layout_height="@dimen/carrierLogo"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/leg_carrier_image_description"
+        app:layout_constraintBottom_toBottomOf="@+id/placesAndAgent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/departureAndArrivalTime"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView
         android:id="@+id/type"

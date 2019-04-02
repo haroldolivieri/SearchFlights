@@ -50,10 +50,16 @@ private fun Itinerary.calculateRating(
 }
 
 private fun Int.inverseNormalization(max: Float, min: Float): Float {
+    if (max == min) {
+        return 1.toFloat()
+    }
     return (max.minus(this)) / (max.minus(min))
 }
 
 private fun BigDecimal.inverseNormalization(max: BigDecimal, min: BigDecimal): BigDecimal {
+    if (max == min) {
+        return 1.toBigDecimal()
+    }
     return (max.minus(this)) / (max.minus(min))
 }
 

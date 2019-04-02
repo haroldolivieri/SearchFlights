@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.haroldo.searchforflights.R
+import com.haroldo.searchforflights.changeVisibility
 import com.haroldo.searchforflights.model.Itinerary
-import kotlinx.android.synthetic.main.view_itinenary_item.view.*
+import kotlinx.android.synthetic.main.item_itinenary.view.*
 import kotlinx.android.synthetic.main.view_leg.view.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -23,22 +23,22 @@ class FlightsResultAdapter @Inject constructor(
     private var onItemClick: (Itinerary) -> Unit = {}
 
     fun updateItems(
-        items: List<Itinerary>,
-        diffResult: DiffUtil.DiffResult,
-        onItemClick: (Itinerary) -> Unit
+        items: List<Itinerary>
+//        diffResult: DiffUtil.DiffResult,
+//        onItemClick: (Itinerary) -> Unit
     ) {
-        this.items = items
         this.onItemClick = onItemClick
-        diffResult.dispatchUpdatesTo(this)
+        this.items = items
+//        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightsResultViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_itinenary_item, parent)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_itinenary, parent, false)
         return FlightsResultViewHolder(view)
     }
 
     override fun getItemCount(): Int = items.size
-
 
     override fun onBindViewHolder(holder: FlightsResultViewHolder, position: Int) {
         with(items[position]) {
@@ -93,6 +93,9 @@ class FlightsResultViewHolder(
     private val price = view.price
     private val agent = view.agent
 
+    private val cheapest = view.chepeast
+    private val shortest = view.shortest
+
     private lateinit var presenter: ItinerariesItemPresenter
 
     fun bind(itinerary: Itinerary, presenterProvider: Provider<ItinerariesItemPresenter>) {
@@ -101,29 +104,35 @@ class FlightsResultViewHolder(
     }
 
     fun updateCheapest(cheapest: Boolean) {
-        presenter.updateCheapest(cheapest)
+        presenter.setupCheapest(cheapest)
     }
 
     fun updateShortest(shortest: Boolean) {
-        presenter.updateShortest(shortest = shortest)
+        presenter.setupShortest(shortest)
     }
 
     fun updateRating(rating: String) {
-        presenter.updateRating(rating = rating)
+        presenter.updateRating(rating)
     }
 
     override fun setLogoCarriers(logoCarrierOut: String, logoCarrierIn: String) {
         Glide
             .with(outboundCarrierLogo)
             .load(logoCarrierOut)
-            .centerCrop()
             .into(outboundCarrierLogo)
 
         Glide
             .with(inboundCarrierLogo)
             .load(logoCarrierIn)
-            .centerCrop()
             .into(inboundCarrierLogo)
+    }
+
+    override fun setCheapestVisibility(visible: Boolean) {
+        cheapest.changeVisibility(visible)
+    }
+
+    override fun changeShortestVisibility(visible: Boolean) {
+        shortest.changeVisibility(visible)
     }
 
     override fun setDepartureArrivalTime(departureArrivalTimeOut: String, departureArrivalTimeIn: String) {

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_8"
+    android:layout_marginTop="@dimen/spacing_8"
+    android:layout_marginEnd="@dimen/spacing_8"
+    app:cardCornerRadius="@dimen/elevation_3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/outboundLeg"
+            layout="@layout/view_leg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginTop="@dimen/spacing_16"
+            android:layout_marginEnd="@dimen/spacing_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/inboundLeg"
+            layout="@layout/view_leg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginEnd="@dimen/spacing_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/outboundLeg" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inboundLeg" />
+
+        <ImageView
+            android:id="@+id/ratingImage"
+            android:layout_width="@dimen/reatingImage"
+            android:layout_height="@dimen/reatingImage"
+            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginTop="@dimen/spacing_24"
+            android:layout_marginBottom="@dimen/spacing_24"
+            android:contentDescription="@string/rating_image_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            tools:srcCompat="@drawable/ic_sentiment_neutral_24dp" />
+
+        <TextView
+            android:id="@+id/rating"
+            style="@style/TextMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_8"
+            android:gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="@+id/ratingImage"
+            app:layout_constraintStart_toEndOf="@+id/ratingImage"
+            app:layout_constraintTop_toTopOf="@+id/ratingImage"
+            tools:text="5.9" />
+
+        <TextView
+            android:id="@+id/price"
+            style="@style/TextMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_16"
+            app:layout_constraintBottom_toTopOf="@+id/agent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="£1000" />
+
+        <TextView
+            android:id="@+id/agent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/price"
+            app:layout_constraintTop_toBottomOf="@+id/price"
+            tools:text="via WizzAir.com" />
+
+        <TextView
+            android:id="@+id/chepeast"
+            style="@style/TextExtraInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:text="@string/chepeast"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/shortest"
+            style="@style/TextExtraInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:layout_marginEnd="@dimen/spacing_16"
+            android:text="@string/shortest"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
