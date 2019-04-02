@@ -1,6 +1,7 @@
 package com.haroldo.searchforflights.request
 
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -20,7 +21,7 @@ class InMemoryFlowableRequest<T>(private val source: Flowable<T>) {
 
     private val disposable = CompositeDisposable()
 
-    fun events() =
+    fun events(): Observable<Event<T>> =
         eventsSubject.doOnSubscribe {
             if (isInitialState) {
                 subscribe(source)

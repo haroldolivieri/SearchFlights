@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/departureAndArrivalTime"
+        style="@style/TextMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_16"
+        android:textColor="@android:color/primary_text_light"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/carrierLogo"
+        app:layout_constraintTop_toTopOf="@+id/carrierLogo"
+        tools:text="15:35 - 17:00" />
+
+    <TextView
+        android:id="@+id/placesAndAgent"
+        style="@style/TextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/carrierLogo"
+        app:layout_constraintStart_toStartOf="@+id/departureAndArrivalTime"
+        app:layout_constraintTop_toBottomOf="@+id/departureAndArrivalTime"
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="BUG - LGW, Wizz Air" />
+
+    <ImageView
+        android:id="@+id/carrierLogo"
+        android:layout_width="@dimen/carrierLogo"
+        android:layout_height="@dimen/carrierLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/type"
+        style="@style/TextMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBaseline_toBaselineOf="@+id/departureAndArrivalTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Direct" />
+
+    <TextView
+        android:id="@+id/totalDuration"
+        style="@style/TextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBaseline_toBaselineOf="@+id/placesAndAgent"
+        app:layout_constraintEnd_toEndOf="@+id/type"
+        tools:text="@tools:sample/date/hhmm" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.haroldo.searchforflights.request
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -20,7 +21,7 @@ class InMemoryCompletableRequest(private val source: Completable) {
 
     private val disposable = CompositeDisposable()
 
-    fun events() =
+    fun events(): Observable<Event<Unit>> =
         eventsSubject.doOnSubscribe {
             if (isInitialState) {
                 subscribe(source)
