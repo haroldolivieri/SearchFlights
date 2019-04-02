@@ -1,22 +1,14 @@
 package com.haroldo.searchforflights.flightsresults.presentation
 
-import androidx.recyclerview.widget.DiffUtil
-import com.haroldo.searchforflights.diffCallback
 import com.haroldo.searchforflights.flightsresults.interactor.CreateSessionInteractor
 import com.haroldo.searchforflights.flightsresults.interactor.SearchFlightsInteractor
 import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.model.SearchQuery
 import com.haroldo.searchforflights.request.reducer
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
 import javax.inject.Inject
-
 
 private const val DATE_FORMAT = "yyyy-MM-dd"
 
@@ -62,34 +54,26 @@ class FlightsResultPresenter @Inject constructor(
     private fun fetchResults() {
         resultsInteractor.events()
             .subscribe { event ->
-            view?.run {
-                event.reducer(
-                    onLoading = { showLoading() },
-                    onError = {
-                        hideLoading()
-                        showFetchResultsError()
-                    },
-                    onDataArrived = { calculateDiff(event.data!!) },
-                    onCompleted = {
-                        hideLoading()
-                        calculateDiff(event.data!!)
-                    }
-                )
-            }
-        }.addTo(disposables)
-    }
-
-    private fun calculateDiff(data: List<Itinerary>) {
-        Observable.just(data)
-            .diffCallback { oldItems, newItems ->
-                ItinerariesDiffCallback(oldItineraries = oldItems, newItineraries = newItems)
-            }.subscribe { (newItems, diffResult) ->
-                view?.updateItems(newItems, diffResult!!)
+                view?.run {
+                    event.reducer(
+                        onLoading = { showLoading() },
+                        onError = {
+                            hideLoading()
+                            showFetchResultsError()
+                        },
+                        onDataArrived = {
+                            updateItems(event.data!!)
+                        },
+                        onCompleted = {
+                            hideLoading()
+                            updateItems(event.data!!)
+                        }
+                    )
+                }
             }.addTo(disposables)
     }
 
     private fun createMockedSearchQuery(): SearchQuery {
-
         val today = LocalDate.now()
         val old = today.dayOfWeek
         val nextMonday = today.plusDays(8 - old)
@@ -109,5 +93,5 @@ interface FlightsResultView {
     fun hideLoading()
     fun showCreateSessionError()
     fun showFetchResultsError()
-    fun updateItems(newItems: List<Itinerary>, diffResult: DiffUtil.DiffResult)
+    fun updateItems(newItems: List<Itinerary>)
 }

@@ -58,8 +58,8 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         }
     }
 
-    override fun updateItems(newItems: List<Itinerary>, diffResult: DiffUtil.DiffResult) {
-        resultsAdapter.updateItems(newItems, diffResult) {
+    override fun updateItems(newItems: List<Itinerary>) {
+        resultsAdapter.updateItems(newItems) {
             recyclerView.showSnackbar("Feature not implemented yet")
         }
     }

@@ -38,13 +38,16 @@ class ItinerariesDiffCallback(
 
         val bundle = Bundle()
 
-        when {
-            newItinerary.cheapest != oldItinerary.cheapest ->
-                bundle.putBoolean(IS_CHEAPEST, newItinerary.cheapest)
-            newItinerary.shortest != oldItinerary.shortest ->
-                bundle.putBoolean(IS_SHORTEST, newItinerary.shortest)
-            newItinerary.rating != oldItinerary.rating ->
-                bundle.putString(RATING, newItinerary.rating)
+        if (newItinerary.cheapest != oldItinerary.cheapest) {
+            bundle.putBoolean(IS_CHEAPEST, newItinerary.cheapest)
+        }
+
+        if (newItinerary.shortest != oldItinerary.shortest) {
+            bundle.putBoolean(IS_SHORTEST, newItinerary.shortest)
+        }
+
+        if (newItinerary.rating != oldItinerary.rating) {
+            bundle.putString(RATING, newItinerary.rating)
         }
 
         return if (bundle.size() > 0) bundle else null

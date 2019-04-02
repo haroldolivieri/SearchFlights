@@ -24,12 +24,14 @@ class FlightsResultAdapter @Inject constructor(
     private var onItemClick: (Itinerary) -> Unit = {}
 
     fun updateItems(
-        items: List<Itinerary>,
-        diffResult: DiffUtil.DiffResult,
+        newItems: List<Itinerary>,
         onItemClick: (Itinerary) -> Unit
     ) {
+        val diffCallback = ItinerariesDiffCallback(oldItineraries = items, newItineraries = newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         this.onItemClick = onItemClick
-        this.items = items
+        this.items = newItems
+
         diffResult.dispatchUpdatesTo(this)
     }
 
