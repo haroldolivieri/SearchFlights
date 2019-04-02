@@ -10,6 +10,7 @@ import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
+import org.joda.time.Period
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeUnit

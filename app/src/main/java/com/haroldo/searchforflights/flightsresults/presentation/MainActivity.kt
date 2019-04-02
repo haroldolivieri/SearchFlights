@@ -4,14 +4,21 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import com.haroldo.searchforflights.R
+import com.haroldo.searchforflights.changeVisibility
 import com.haroldo.searchforflights.di.FlightsResultComponentHolder
 import com.haroldo.searchforflights.model.Itinerary
+import com.haroldo.searchforflights.showSnackbar
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
+
 
 class MainActivity : AppCompatActivity(), FlightsResultView {
 
     @Inject
     lateinit var presenter: FlightsResultPresenter
+
+    @Inject
+    lateinit var adapter: FlightsResultAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +34,29 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
     }
 
     override fun showLoading() {
+        loading.changeVisibility(true)
     }
 
     override fun hideLoading() {
+        loading.changeVisibility(false)
     }
 
     override fun showCreateSessionError() {
+        recyclerView.showSnackbar("Create session error", R.string.retry) {
+            presenter.retrySession()
+        }
     }
 
     override fun showFetchResultsError() {
+        recyclerView.showSnackbar("Fetch results error", R.string.retry) {
+            presenter.retryFetchResults()
+        }
     }
 
     override fun updateItems(newItems: List<Itinerary>, diffResult: DiffUtil.DiffResult) {
-        //recyclerViewAdapter.updateItems(pair.items);
-        //pair.diffResult.dispatchUpdatesTo(recyclerViewAdapter);
+        adapter.updateItems(newItems, diffResult) {
+            recyclerView.showSnackbar("Feature not implemented yet")
+        }
     }
 
     private fun performInjections() {

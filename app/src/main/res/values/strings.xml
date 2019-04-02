@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SearchForFlights</string>
+    <string name="rating_image_description">rating image</string>
+    <string name="leg_carrier_image_description">carrier from flight leg</string>
+    <string name="retry">Retry</string>
+    <string name="chepeast">chepeast</string>
+    <string name="shortest">shortest</string>
 </resources>
