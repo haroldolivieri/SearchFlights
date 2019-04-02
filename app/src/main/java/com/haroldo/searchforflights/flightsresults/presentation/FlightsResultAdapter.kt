@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.haroldo.searchforflights.R
@@ -23,14 +24,13 @@ class FlightsResultAdapter @Inject constructor(
     private var onItemClick: (Itinerary) -> Unit = {}
 
     fun updateItems(
-        items: List<Itinerary>
-//        diffResult: DiffUtil.DiffResult,
-//        onItemClick: (Itinerary) -> Unit
+        items: List<Itinerary>,
+        diffResult: DiffUtil.DiffResult,
+        onItemClick: (Itinerary) -> Unit
     ) {
         this.onItemClick = onItemClick
         this.items = items
-//        diffResult.dispatchUpdatesTo(this)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightsResultViewHolder {
