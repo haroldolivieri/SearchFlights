@@ -60,7 +60,8 @@ class FlightsResultPresenter @Inject constructor(
     }
 
     private fun fetchResults() {
-        resultsInteractor.events().subscribe { event ->
+        resultsInteractor.events()
+            .subscribe { event ->
             view?.run {
                 event.reducer(
                     onLoading = { showLoading() },
@@ -80,8 +81,6 @@ class FlightsResultPresenter @Inject constructor(
 
     private fun calculateDiff(data: List<Itinerary>) {
         Observable.just(data)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .diffCallback { oldItems, newItems ->
                 ItinerariesDiffCallback(oldItineraries = oldItems, newItineraries = newItems)
             }.subscribe { (newItems, diffResult) ->
@@ -99,8 +98,8 @@ class FlightsResultPresenter @Inject constructor(
         val inboundDate = nextMonday.plusDays(1).toString(DATE_FORMAT)
 
         return SearchQuery(
-            outboundDate = "2019-04-03",
-            inboundDate = "2019-04-04"
+            outboundDate = outboundDate,
+            inboundDate = inboundDate
         )
     }
 }
