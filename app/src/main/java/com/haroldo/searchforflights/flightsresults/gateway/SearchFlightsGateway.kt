@@ -34,7 +34,7 @@ class SearchFlightsGateway @Inject constructor(
             )
         }
 
-    fun fetchSearchFlightsResult() = api.poolingResults(poolingUrlProvider.get())
+    fun fetchSearchFlightsResult() = api.poolingResults(poolingUrlProvider.get(), apiKey)
 
     interface Api {
         @POST("pricing/v1.0")
@@ -56,6 +56,9 @@ class SearchFlightsGateway @Inject constructor(
         ): Completable
 
         @GET
-        fun poolingResults(@Url url: String): Single<ApiResponseSearch>
+        fun poolingResults(
+            @Url url: String,
+            @Query("apiKey") apiKey: String
+        ): Single<ApiResponseSearch>
     }
 }

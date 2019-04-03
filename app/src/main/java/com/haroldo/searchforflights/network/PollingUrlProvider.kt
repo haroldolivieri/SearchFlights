@@ -11,14 +11,13 @@ private const val URL_POLLING = "url_polling"
 
 @ApplicationScope
 class PollingUrlProvider @Inject constructor(
-    @ApiKey private val apiKey: String,
     private val sharedPreferences: SharedPreferences
 ) {
     private val subject = BehaviorSubject.create<Unit>()
 
     fun set(pollingUrl: String) {
         if (!pollingUrl.isEmpty()) {
-            sharedPreferences.edit().putString(URL_POLLING, "$pollingUrl?apiKey=$apiKey").apply()
+            sharedPreferences.edit().putString(URL_POLLING, pollingUrl).apply()
             subject.onNext(Unit)
         }
     }
