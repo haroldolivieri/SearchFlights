@@ -2,171 +2,102 @@ package com.haroldo.searchforflights.flightsresults.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.haroldo.searchforflights.R
-import com.haroldo.searchforflights.changeVisibility
 import com.haroldo.searchforflights.model.Itinerary
-import kotlinx.android.synthetic.main.item_itinenary.view.*
-import kotlinx.android.synthetic.main.view_leg.view.*
 import javax.inject.Inject
 import javax.inject.Provider
 
+private const val VIEW_TYPE_LOADING = 0
+private const val VIEW_TYPE_NORMAL = 1
+
 class FlightsResultAdapter @Inject constructor(
     private val itemPresenterProvider: Provider<ItinerariesItemPresenter>
-) : RecyclerView.Adapter<FlightsResultViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items: List<Itinerary> = emptyList()
-    private var onItemClick: (Itinerary) -> Unit = {}
+    private var items: MutableList<Itinerary?> = mutableListOf()
 
     fun updateItems(
         newItems: List<Itinerary>,
-        onItemClick: (Itinerary) -> Unit
+        isLastPage: Boolean
     ) {
-        val diffCallback = ItinerariesDiffCallback(oldItineraries = items, newItineraries = newItems)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        this.onItemClick = onItemClick
-        this.items = newItems
+        removeLoading()
 
-        diffResult.dispatchUpdatesTo(this)
+        this.items = newItems.toMutableList()
+
+        if (!isLastPage) {
+            addLoading()
+        }
+
+        calculateDiff(newItems)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightsResultViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_itinenary, parent, false)
-        return FlightsResultViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_LOADING -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_footer, parent, false)
+                object : RecyclerView.ViewHolder(view) {}
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_itinenary, parent, false)
+                ItineraryViewHolder(view)
+            }
+        }
+
     }
 
     override fun getItemCount(): Int = items.size
 
-    override fun onBindViewHolder(holder: FlightsResultViewHolder, position: Int) {
-        with(items[position]) {
-            holder.itemView.setOnClickListener { onItemClick(this) }
-            holder.bind(this, itemPresenterProvider)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ItineraryViewHolder) {
+            holder.bind(items[position]!!, itemPresenterProvider)
+        }
+    }
+
+    override fun getItemViewType(position: Int) =
+        if (items[position] == null) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
+
+
+    private fun addLoading() {
+        items.add(null)
+    }
+
+    private fun removeLoading() {
+        if (!items.isEmpty() && items[items.lastIndex] == null) {
+            items.removeAt(items.lastIndex)
         }
     }
 
     /**
      * Renders only the changed parts of the calculated diff
      */
-    override fun onBindViewHolder(holder: FlightsResultViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) {
-            super.onBindViewHolder(holder, position, payloads)
-        } else {
-            val bundle = payloads[0] as Bundle
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (holder is ItineraryViewHolder) {
+            if (payloads.isEmpty()) {
+                super.onBindViewHolder(holder, position, payloads)
+            } else {
+                val bundle = payloads[0] as Bundle
 
-            if (bundle.containsKey(IS_CHEAPEST)) {
-                holder.updateCheapest(bundle.getBoolean(IS_CHEAPEST))
-            }
+                if (bundle.containsKey(IS_CHEAPEST)) {
+                    holder.updateCheapest(bundle.getBoolean(IS_CHEAPEST))
+                }
 
-            if (bundle.containsKey(IS_SHORTEST)) {
-                holder.updateShortest(bundle.getBoolean(IS_SHORTEST))
-            }
+                if (bundle.containsKey(IS_SHORTEST)) {
+                    holder.updateShortest(bundle.getBoolean(IS_SHORTEST))
+                }
 
-            if (bundle.containsKey(RATING)) {
-                holder.updateRating(bundle.getString(RATING)!!)
+                if (bundle.containsKey(RATING)) {
+                    holder.updateRating(bundle.getString(RATING)!!)
+                }
             }
         }
     }
-}
 
-
-class FlightsResultViewHolder(
-    view: View
-) : RecyclerView.ViewHolder(view), ItinerariesItemView {
-
-    private val outboundCarrierLogo = view.outboundLeg.carrierLogo
-    private val outboundDepartureArrivalTime = view.outboundLeg.departureAndArrivalTime
-    private val outboundPlacesAndAgent = view.outboundLeg.placesAndAgent
-    private val outboundType = view.outboundLeg.type
-    private val outboundDuration = view.outboundLeg.totalDuration
-
-    private val inboundCarrierLogo = view.inboundLeg.carrierLogo
-    private val inboundDepartureArrivalTime = view.inboundLeg.departureAndArrivalTime
-    private val inboundPlacesAndAgent = view.inboundLeg.placesAndAgent
-    private val inboundType = view.inboundLeg.type
-    private val inboundDuration = view.inboundLeg.totalDuration
-
-    private val ratingText = view.rating
-    private val ratingImage = view.ratingImage
-    private val price = view.price
-    private val agent = view.agent
-
-    private val cheapest = view.chepeast
-    private val shortest = view.shortest
-
-    private lateinit var presenter: ItinerariesItemPresenter
-
-    fun bind(itinerary: Itinerary, presenterProvider: Provider<ItinerariesItemPresenter>) {
-        this.presenter = presenterProvider.get()
-        presenter.onAttach(this, itinerary)
-    }
-
-    fun updateCheapest(cheapest: Boolean) {
-        presenter.setupCheapest(cheapest)
-    }
-
-    fun updateShortest(shortest: Boolean) {
-        presenter.setupShortest(shortest)
-    }
-
-    fun updateRating(rating: String) {
-        presenter.updateRating(rating)
-    }
-
-    override fun setLogoCarriers(logoCarrierOut: String, logoCarrierIn: String) {
-        Glide
-            .with(outboundCarrierLogo)
-            .load(logoCarrierOut)
-            .into(outboundCarrierLogo)
-
-        Glide
-            .with(inboundCarrierLogo)
-            .load(logoCarrierIn)
-            .into(inboundCarrierLogo)
-    }
-
-    override fun setCheapestVisibility(visible: Boolean) {
-        cheapest.changeVisibility(visible)
-    }
-
-    override fun changeShortestVisibility(visible: Boolean) {
-        shortest.changeVisibility(visible)
-    }
-
-    override fun setDepartureArrivalTime(departureArrivalTimeOut: String, departureArrivalTimeIn: String) {
-        outboundDepartureArrivalTime.text = departureArrivalTimeOut
-        inboundDepartureArrivalTime.text = departureArrivalTimeIn
-    }
-
-    override fun setPlacesAndAgent(placesOut: String, placesIn: String) {
-        outboundPlacesAndAgent.text = placesOut
-        inboundPlacesAndAgent.text = placesIn
-    }
-
-    override fun setType(typeOut: String, typeIn: String) {
-        outboundType.text = typeOut
-        inboundType.text = typeIn
-    }
-
-    override fun setDuration(durationOut: String, durationIn: String) {
-        outboundDuration.text = durationOut
-        inboundDuration.text = durationIn
-    }
-
-    override fun setRating(rating: String, @DrawableRes ratingImage: Int) {
-        ratingText.text = rating
-        this.ratingImage.setImageResource(ratingImage)
-    }
-
-    override fun setAgent(agentStr: String) {
-        agent.text = agentStr
-    }
-
-    override fun setPrice(priceStr: String) {
-        price.text = priceStr
+    private fun calculateDiff(newItems: List<Itinerary>) {
+        val diffCallback = ItinerariesDiffCallback(oldItineraries = items.toList(), newItineraries = newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
     }
 }

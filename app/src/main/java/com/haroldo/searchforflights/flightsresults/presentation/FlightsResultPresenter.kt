@@ -11,6 +11,7 @@ import org.joda.time.LocalDate
 import javax.inject.Inject
 
 private const val DATE_FORMAT = "yyyy-MM-dd"
+private const val FIRST_PAGE = 0
 
 class FlightsResultPresenter @Inject constructor(
     private val resultsInteractor: SearchFlightsInteractor,
@@ -18,7 +19,7 @@ class FlightsResultPresenter @Inject constructor(
 ) {
 
     private var view: FlightsResultView? = null
-
+    private var pageIndex: Int = FIRST_PAGE
     private val disposables = CompositeDisposable()
 
     fun onAttach(view: FlightsResultView) {
@@ -52,7 +53,7 @@ class FlightsResultPresenter @Inject constructor(
     }
 
     private fun fetchResults() {
-        resultsInteractor.events()
+        resultsInteractor.events(pageIndex)
             .subscribe { event ->
                 view?.run {
                     event.reducer(
@@ -62,11 +63,13 @@ class FlightsResultPresenter @Inject constructor(
                             showFetchResultsError()
                         },
                         onDataArrived = {
-                            updateItems(event.data!!)
+                            if (pageIndex == FIRST_PAGE) {
+                                updateItems(it.first, it.second)
+                            }
                         },
                         onCompleted = {
                             hideLoading()
-                            updateItems(event.data!!)
+                            updateItems(it?.first!!, it.second)
                         }
                     )
                 }
@@ -86,6 +89,10 @@ class FlightsResultPresenter @Inject constructor(
             inboundDate = inboundDate
         )
     }
+
+    fun endHasBeenReached() {
+
+    }
 }
 
 interface FlightsResultView {
@@ -93,5 +100,5 @@ interface FlightsResultView {
     fun hideLoading()
     fun showCreateSessionError()
     fun showFetchResultsError()
-    fun updateItems(newItems: List<Itinerary>)
+    fun updateItems(newItems: List<Itinerary>, isLastPage: Boolean)
 }

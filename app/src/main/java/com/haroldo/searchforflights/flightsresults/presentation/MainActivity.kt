@@ -2,8 +2,8 @@ package com.haroldo.searchforflights.flightsresults.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.haroldo.searchforflights.R
 import com.haroldo.searchforflights.changeVisibility
 import com.haroldo.searchforflights.di.FlightsResultComponentHolder
@@ -58,9 +58,23 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         }
     }
 
-    override fun updateItems(newItems: List<Itinerary>) {
-        resultsAdapter.updateItems(newItems) {
-            recyclerView.showSnackbar("Feature not implemented yet")
+    override fun updateItems(newItems: List<Itinerary>, isLastPage: Boolean) {
+        resultsAdapter.updateItems(newItems, isLastPage)
+    }
+
+    private val onScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+
+            val totalItemCount = layoutManager.itemCount
+            val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+            val endHasBeenReached = lastVisible + 5 >= totalItemCount
+            if (totalItemCount > 0 && endHasBeenReached) {
+                presenter.endHasBeenReached()
+            }
         }
     }
 

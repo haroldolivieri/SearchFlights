@@ -12,7 +12,7 @@ import javax.inject.Inject
 class SearchFlightsGateway @Inject constructor(
     private val api: Api,
     @ApiKey private val apiKey: String,
-    private val poolingUrlProvider: PollingUrlProvider
+    private val pollingUrlProvider: PollingUrlProvider
 ) {
 
     fun createSearchFlightsSession(query: SearchQuery) =
@@ -34,7 +34,12 @@ class SearchFlightsGateway @Inject constructor(
             )
         }
 
-    fun fetchSearchFlightsResult() = api.poolingResults(poolingUrlProvider.get(), apiKey)
+    fun fetchSearchFlightsResult(pageIndex: Int, pageSize: Int) = api.poolingResults(
+        url = pollingUrlProvider.get(),
+        apiKey = apiKey,
+        pageIndex = pageIndex,
+        pageSize = pageSize
+    )
 
     interface Api {
         @POST("pricing/v1.0")
@@ -58,7 +63,9 @@ class SearchFlightsGateway @Inject constructor(
         @GET
         fun poolingResults(
             @Url url: String,
-            @Query("apiKey") apiKey: String
+            @Query("apiKey") apiKey: String,
+            @Query("pageIndex") pageIndex: Int,
+            @Query("pageSize") pageSize: Int
         ): Single<ApiResponseSearch>
     }
 }

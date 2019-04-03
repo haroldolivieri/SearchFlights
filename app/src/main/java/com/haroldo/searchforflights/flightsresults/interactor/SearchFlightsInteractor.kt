@@ -18,6 +18,8 @@ import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+private const val PAGE_SIZE = 50
+
 @FlightsResultScope
 class SearchFlightsInteractor @Inject constructor(
     private val gateway: SearchFlightsGateway,
@@ -27,6 +29,8 @@ class SearchFlightsInteractor @Inject constructor(
 ) {
 
     private val disposables = CompositeDisposable()
+    private var lastPageIndex = -1
+    private var oldItineraries: MutableSet<Itinerary> = mutableSetOf()
 
     init {
         pollingUrlProvider
@@ -36,11 +40,12 @@ class SearchFlightsInteractor @Inject constructor(
             }.addTo(disposables)
     }
 
-    private var request: InMemoryFlowableRequest<List<Itinerary>>? = null
+    private var request: InMemoryFlowableRequest<Pair<List<Itinerary>, Boolean>>? = null
 
-    fun events(): Observable<Event<List<Itinerary>>> {
-        if (request == null) {
-            request = InMemoryFlowableRequest(source())
+    fun events(pageIndex: Int): Observable<Event<Pair<List<Itinerary>, Boolean>>> {
+        if (request == null || lastPageIndex != pageIndex) {
+            this.lastPageIndex = pageIndex
+            request = InMemoryFlowableRequest(source(pageIndex))
         }
 
         return request!!.events()
@@ -48,21 +53,25 @@ class SearchFlightsInteractor @Inject constructor(
 
     fun retry() = request?.retry()
 
-    private fun source(): Flowable<List<Itinerary>> {
+    private fun source(pageIndex: Int): Flowable<Pair<List<Itinerary>, Boolean>> {
         return gateway
-            .fetchSearchFlightsResult()
+            .fetchSearchFlightsResult(pageIndex, PAGE_SIZE)
             .repeatWhen { it.delay(1, TimeUnit.SECONDS, scheduler) }
             .takeUntil { it.status == Status.UpdatesComplete }
-            .map { mapper.map(it.itineraries) }
-            .map { itineraries ->
-                return@map if (!itineraries.isEmpty()) {
-                    itineraries.clientSideCalculations().sortedBy { it.price }
-                } else {
-                    itineraries
-                }
+            .map { response ->
+
+                val rawItineraries = mapper.map(response.itineraries)
+                oldItineraries.addAll(rawItineraries)
+
+                val resultItineraries = oldItineraries
+                    .toList()
+                    .clientSideCalculations()
+                    .sortedBy { it.price }
+
+                Pair(
+                    resultItineraries,
+                    resultItineraries.isEmpty()
+                )
             }
     }
 }
-
-
-

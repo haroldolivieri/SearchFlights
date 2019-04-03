@@ -11,7 +11,7 @@ const val RATING = "rating"
 
 class ItinerariesDiffCallback(
     private val newItineraries: List<Itinerary>,
-    private val oldItineraries: List<Itinerary>
+    private val oldItineraries: List<Itinerary?>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldItineraries.size
@@ -22,8 +22,8 @@ class ItinerariesDiffCallback(
         oldItineraries[oldItemPosition] == newItineraries[newItemPosition]
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItineraryInboundLegId = oldItineraries[oldItemPosition].inboundLeg.id
-        val oldItineraryOutboundLegId = oldItineraries[oldItemPosition].outboundLeg.id
+        val oldItineraryInboundLegId = oldItineraries[oldItemPosition]?.inboundLeg?.id
+        val oldItineraryOutboundLegId = oldItineraries[oldItemPosition]?.outboundLeg?.id
 
         val newItineraryInboundLegId = newItineraries[newItemPosition].inboundLeg.id
         val newItineraryOutboundLegId = newItineraries[newItemPosition].outboundLeg.id
@@ -38,15 +38,15 @@ class ItinerariesDiffCallback(
 
         val bundle = Bundle()
 
-        if (newItinerary.cheapest != oldItinerary.cheapest) {
+        if (newItinerary.cheapest != oldItinerary?.cheapest) {
             bundle.putBoolean(IS_CHEAPEST, newItinerary.cheapest)
         }
 
-        if (newItinerary.shortest != oldItinerary.shortest) {
+        if (newItinerary.shortest != oldItinerary?.shortest) {
             bundle.putBoolean(IS_SHORTEST, newItinerary.shortest)
         }
 
-        if (newItinerary.rating != oldItinerary.rating) {
+        if (newItinerary.rating != oldItinerary?.rating) {
             bundle.putString(RATING, newItinerary.rating)
         }
 

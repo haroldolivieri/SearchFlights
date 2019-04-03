@@ -3,13 +3,18 @@ package com.haroldo.searchforflights.model.mapper
 import com.haroldo.searchforflights.model.Itinerary
 import java.math.BigDecimal
 
-fun List<Itinerary>.clientSideCalculations() =
+fun List<Itinerary>.clientSideCalculations(): List<Itinerary> {
+
+    if (this.isEmpty()) {
+        return this
+    }
+
     run {
         val (stopsReference,
             durationReference,
             priceReference) = getMeasureReferences()
 
-        map {
+        return map {
             with(it) {
                 rating = calculateRating(stopsReference, durationReference, priceReference)
 
@@ -24,6 +29,8 @@ fun List<Itinerary>.clientSideCalculations() =
             }
         }
     }
+}
+
 
 private fun Itinerary.calculateRating(
     stopsReference: MinMax<Int>,
