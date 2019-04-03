@@ -12,7 +12,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 
-class InMemoryFlowableRequest<T>(private val source: Flowable<T>) {
+class InMemoryFlowableRequest<T>(private var source: Flowable<T>) {
 
     private val initialState: Event<T> =
         Event.loading()
@@ -28,12 +28,20 @@ class InMemoryFlowableRequest<T>(private val source: Flowable<T>) {
             }
         }
 
+    fun lastEventType(): Event.Type? = eventsSubject.value?.type
+
     fun retry() {
         dispose()
         subscribe(source)
     }
 
-    fun dispose() {
+    fun changeSource(source: Flowable<T>) {
+        dispose()
+        this.source = source
+        subscribe(source)
+    }
+
+    private fun dispose() {
         disposable.clear()
     }
 

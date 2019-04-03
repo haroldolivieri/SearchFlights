@@ -38,7 +38,9 @@ class SearchFlightsGateway @Inject constructor(
         url = pollingUrlProvider.get(),
         apiKey = apiKey,
         pageIndex = pageIndex,
-        pageSize = pageSize
+        pageSize = pageSize,
+        sortType = "price",
+        sortOrder = "asc"
     )
 
     interface Api {
@@ -65,7 +67,9 @@ class SearchFlightsGateway @Inject constructor(
             @Url url: String,
             @Query("apiKey") apiKey: String,
             @Query("pageIndex") pageIndex: Int,
-            @Query("pageSize") pageSize: Int
+            @Query("pageSize") pageSize: Int,
+            @Query("sortType") sortType: String,
+            @Query("sortOrder") sortOrder: String
         ): Single<ApiResponseSearch>
     }
 }

@@ -1,5 +1,6 @@
 package com.haroldo.searchforflights.flightsresults.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.haroldo.searchforflights.R
 import com.haroldo.searchforflights.changeVisibility
 import com.haroldo.searchforflights.di.FlightsResultComponentHolder
+import com.haroldo.searchforflights.flightsresults.presentation.adapter.FlightsResultAdapter
 import com.haroldo.searchforflights.model.Itinerary
 import com.haroldo.searchforflights.showSnackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -30,7 +32,22 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         with(recyclerView) {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = resultsAdapter
+            addOnScrollListener(onScrollListener)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ITEMS_COUNT_TEXT, resultsCounter.text.toString())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        resultsCounter.text = savedInstanceState?.getString(ITEMS_COUNT_TEXT)
+    }
+
+    private fun performInjections() {
+        FlightsResultComponentHolder.getComponent(this).inject(this)
     }
 
     override fun onDestroy() {
@@ -58,8 +75,13 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         }
     }
 
-    override fun updateItems(newItems: List<Itinerary>, isLastPage: Boolean) {
-        resultsAdapter.updateItems(newItems, isLastPage)
+    @SuppressLint("SetTextI18n")
+    override fun showResultsCount(count: Int) {
+        resultsCounter.text = "$count results"
+    }
+
+    override fun updateItems(newItems: List<Itinerary>, isLastPageLoaded: Boolean) {
+        resultsAdapter.updateItems(newItems, isLastPageLoaded)
     }
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
@@ -67,18 +89,18 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
             super.onScrolled(recyclerView, dx, dy)
 
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-
             val totalItemCount = layoutManager.itemCount
-            val lastVisible = layoutManager.findLastVisibleItemPosition()
+            val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+            val endHasBeenReached = lastVisibleItem + VISIBLE_THRESHOLD >= totalItemCount
 
-            val endHasBeenReached = lastVisible + 5 >= totalItemCount
             if (totalItemCount > 0 && endHasBeenReached) {
-                presenter.endHasBeenReached()
+                presenter.endScrollHasBeenReached()
             }
         }
     }
 
-    private fun performInjections() {
-        FlightsResultComponentHolder.getComponent(this).inject(this)
+    companion object {
+        private const val VISIBLE_THRESHOLD = 1
+        private const val ITEMS_COUNT_TEXT = "itemsCounter"
     }
 }

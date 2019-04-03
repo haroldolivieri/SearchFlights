@@ -1,7 +1,6 @@
 package com.haroldo.searchforflights.model
 
 import android.os.Parcelable
-import com.haroldo.searchforflights.model.api.ApiCreateSessionRequest
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

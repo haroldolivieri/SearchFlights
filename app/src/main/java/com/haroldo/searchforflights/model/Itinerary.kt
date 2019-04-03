@@ -11,7 +11,25 @@ data class Itinerary(
     var rating: String = "",
     var cheapest: Boolean = false,
     var shortest: Boolean = false
-)
+) {
+    override fun hashCode(): Int {
+        return (outboundLeg.id + inboundLeg.id).hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Itinerary
+
+        if (price != other.price) return false
+        if (agentNames != other.agentNames) return false
+        if (outboundLeg != other.outboundLeg) return false
+        if (inboundLeg != other.inboundLeg) return false
+
+        return true
+    }
+}
 
 data class Leg(
     val id: String,

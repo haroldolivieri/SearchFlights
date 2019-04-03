@@ -19,7 +19,6 @@ class FlightsResultPresenter @Inject constructor(
 ) {
 
     private var view: FlightsResultView? = null
-    private var pageIndex: Int = FIRST_PAGE
     private val disposables = CompositeDisposable()
 
     fun onAttach(view: FlightsResultView) {
@@ -47,13 +46,17 @@ class FlightsResultPresenter @Inject constructor(
         resultsInteractor.retry()
     }
 
+    fun endScrollHasBeenReached() {
+        resultsInteractor.nextPage()
+    }
+
     fun onDetach() {
         this.view = null
         disposables.clear()
     }
 
     private fun fetchResults() {
-        resultsInteractor.events(pageIndex)
+        resultsInteractor.events()
             .subscribe { event ->
                 view?.run {
                     event.reducer(
@@ -63,17 +66,22 @@ class FlightsResultPresenter @Inject constructor(
                             showFetchResultsError()
                         },
                         onDataArrived = {
-                            if (pageIndex == FIRST_PAGE) {
-                                updateItems(it.first, it.second)
-                            }
+                            updateItems(it)
                         },
                         onCompleted = {
                             hideLoading()
-                            updateItems(it?.first!!, it.second)
+                            updateItems(it!!)
                         }
                     )
                 }
             }.addTo(disposables)
+    }
+
+    private fun updateItems(pair: Pair<List<Itinerary>, Boolean>) {
+        view?.run {
+            updateItems(pair.first, pair.second)
+            showResultsCount(pair.first.size)
+        }
     }
 
     private fun createMockedSearchQuery(): SearchQuery {
@@ -89,16 +97,15 @@ class FlightsResultPresenter @Inject constructor(
             inboundDate = inboundDate
         )
     }
-
-    fun endHasBeenReached() {
-
-    }
 }
 
 interface FlightsResultView {
     fun showLoading()
     fun hideLoading()
+
     fun showCreateSessionError()
     fun showFetchResultsError()
-    fun updateItems(newItems: List<Itinerary>, isLastPage: Boolean)
+
+    fun updateItems(newItems: List<Itinerary>, isLastPageLoaded: Boolean)
+    fun showResultsCount(count: Int)
 }

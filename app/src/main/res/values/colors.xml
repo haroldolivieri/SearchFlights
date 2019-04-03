@@ -6,5 +6,7 @@
     <color name="colorTextMedium">#544C63</color>
     <color name="colorTextSmall">#898294</color>
     <color name="colorDivider">#D8D8D8</color>
+    <color name="colorBackground">#f6f4f7</color>
+    <color name="colorLight">#fafafa</color>
     <color name="colorGreen">#4c8c4a</color>
 </resources>

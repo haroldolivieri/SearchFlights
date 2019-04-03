@@ -4,11 +4,13 @@
     <dimen name="textSmall">12sp</dimen>
 
     <dimen name="carrierLogo">50dp</dimen>
-    <dimen name="reatingImage">20dp</dimen>
+    <dimen name="reatingImage">24dp</dimen>
+    <dimen name="headerHeight">80dp</dimen>
 
     <dimen name="spacing_24">24dp</dimen>
     <dimen name="spacing_16">16dp</dimen>
     <dimen name="spacing_32">32dp</dimen>
     <dimen name="spacing_8">8dp</dimen>
+    <dimen name="spacing_4">4dp</dimen>
     <dimen name="elevation_3dp">3dp</dimen>
 </resources>

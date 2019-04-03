@@ -6,10 +6,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextMedium">
+    <style name="TextMediumBold">
         <item name="android:textColor">@color/colorTextMedium</item>
         <item name="android:textSize">@dimen/textMedium</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextMedium">
+        <item name="android:textColor">@color/colorTextMedium</item>
+        <item name="android:textSize">@dimen/textMedium</item>
     </style>
 
     <style name="TextSmall">

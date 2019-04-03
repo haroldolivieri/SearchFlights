@@ -5,4 +5,5 @@
     <string name="retry">Retry</string>
     <string name="chepeast">chepeast</string>
     <string name="shortest">shortest</string>
+    <string name="no_results">No results</string>
 </resources>

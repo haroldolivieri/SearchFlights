@@ -1,4 +1,4 @@
-package com.haroldo.searchforflights.flightsresults.presentation
+package com.haroldo.searchforflights.flightsresults.presentation.adapter
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.haroldo.searchforflights.R
+import com.haroldo.searchforflights.flightsresults.presentation.IS_CHEAPEST
+import com.haroldo.searchforflights.flightsresults.presentation.IS_SHORTEST
+import com.haroldo.searchforflights.flightsresults.presentation.ItinerariesDiffCallback
+import com.haroldo.searchforflights.flightsresults.presentation.RATING
 import com.haroldo.searchforflights.model.Itinerary
 import javax.inject.Inject
 import javax.inject.Provider
@@ -21,16 +25,17 @@ class FlightsResultAdapter @Inject constructor(
 
     fun updateItems(
         newItems: List<Itinerary>,
-        isLastPage: Boolean
+        isLastPageLoaded: Boolean
     ) {
-        removeLoading()
+        removeLoadingIfExists()
 
         this.items = newItems.toMutableList()
 
-        if (!isLastPage) {
+        if (!isLastPageLoaded) {
             addLoading()
         }
 
+//        notifyDataSetChanged()
         calculateDiff(newItems)
     }
 
@@ -64,14 +69,14 @@ class FlightsResultAdapter @Inject constructor(
         items.add(null)
     }
 
-    private fun removeLoading() {
+    private fun removeLoadingIfExists() {
         if (!items.isEmpty() && items[items.lastIndex] == null) {
             items.removeAt(items.lastIndex)
         }
     }
 
     /**
-     * Renders only the changed parts of the calculated diff
+     * Renders only the changed parts of the calculated diffs
      */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (holder is ItineraryViewHolder) {
@@ -96,8 +101,11 @@ class FlightsResultAdapter @Inject constructor(
     }
 
     private fun calculateDiff(newItems: List<Itinerary>) {
-        val diffCallback = ItinerariesDiffCallback(oldItineraries = items.toList(), newItineraries = newItems)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        val diffCallback = ItinerariesDiffCallback(
+            oldItineraries = items.toList(),
+            newItineraries = newItems
+        )
+        val diffResult = DiffUtil.calculateDiff(diffCallback, true)
         diffResult.dispatchUpdatesTo(this)
     }
 }

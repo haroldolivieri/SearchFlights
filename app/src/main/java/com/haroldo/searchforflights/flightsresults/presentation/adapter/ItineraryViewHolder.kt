@@ -1,4 +1,4 @@
-package com.haroldo.searchforflights.flightsresults.presentation
+package com.haroldo.searchforflights.flightsresults.presentation.adapter
 
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -13,7 +13,8 @@ import javax.inject.Provider
 
 class ItineraryViewHolder(
     view: View
-) : RecyclerView.ViewHolder(view), ItinerariesItemView {
+) : RecyclerView.ViewHolder(view),
+    ItinerariesItemView {
 
     private val outboundCarrierLogo = view.outboundLeg.carrierLogo
     private val outboundDepartureArrivalTime = view.outboundLeg.departureAndArrivalTime
@@ -96,7 +97,9 @@ class ItineraryViewHolder(
 
     override fun setRating(rating: String, @DrawableRes ratingImage: Int) {
         ratingText.text = rating
-        this.ratingImage.setImageResource(ratingImage)
+        if (ratingImage != -1) {
+            this.ratingImage.setImageResource(ratingImage)
+        }
     }
 
     override fun setAgent(agentStr: String) {

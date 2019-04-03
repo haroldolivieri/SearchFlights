@@ -1,4 +1,4 @@
-package com.haroldo.searchforflights.flightsresults.presentation
+package com.haroldo.searchforflights.flightsresults.presentation.adapter
 
 import androidx.annotation.DrawableRes
 import com.haroldo.searchforflights.R
@@ -57,10 +57,10 @@ class ItinerariesItemPresenter @Inject constructor() {
 
     private fun getRatingResource(rating: String) =
         when (rating.toFloat()) {
-            in 0.0..1.9 -> R.drawable.ic_sentiment_very_dissatisfied_24dp
-            in 2.0..3.9 -> R.drawable.ic_sentiment_dissatisfied_24dp
-            in 4.0..5.9 -> R.drawable.ic_sentiment_neutral_24dp
-            in 6.0..8.9 -> R.drawable.ic_sentiment_satisfied_24dp
+            in 0.0..2.0 -> R.drawable.ic_sentiment_very_dissatisfied_24dp
+            in 2.0..4.0 -> R.drawable.ic_sentiment_dissatisfied_24dp
+            in 4.0..6.0 -> R.drawable.ic_sentiment_neutral_24dp
+            in 6.0..9.0 -> R.drawable.ic_sentiment_satisfied_24dp
             in 9.0..10.0 -> R.drawable.ic_sentiment_very_satisfied_24dp
             else -> -1
         }

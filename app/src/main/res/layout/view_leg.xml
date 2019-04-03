@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/departureAndArrivalTime"
-        style="@style/TextMedium"
+        style="@style/TextMediumBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_16"
@@ -38,7 +38,7 @@
 
     <TextView
         android:id="@+id/type"
-        style="@style/TextMedium"
+        style="@style/TextMediumBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@+id/departureAndArrivalTime"
