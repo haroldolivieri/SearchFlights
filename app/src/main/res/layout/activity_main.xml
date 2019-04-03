@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/spacing_16"
+            android:layout_marginStart="@dimen/spacing_32"
             android:text="@string/no_results" />
 
     </androidx.cardview.widget.CardView>

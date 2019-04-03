@@ -14,14 +14,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+                android:id="@+id/chepeast"
+                style="@style/TextExtraInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_24"
+                android:layout_marginTop="@dimen/spacing_8"
+                android:text="@string/chepeast"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+                android:id="@+id/shortest"
+                style="@style/TextExtraInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_8"
+                android:layout_marginEnd="@dimen/spacing_24"
+                android:text="@string/shortest"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         <include
             android:id="@+id/outboundLeg"
             layout="@layout/view_leg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_16"
-            android:layout_marginTop="@dimen/spacing_16"
-            android:layout_marginEnd="@dimen/spacing_16"
+            android:layout_marginStart="@dimen/spacing_24"
+            android:layout_marginTop="@dimen/spacing_24"
+            android:layout_marginEnd="@dimen/spacing_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,30 +53,31 @@
             layout="@layout/view_leg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_16"
-            android:layout_marginEnd="@dimen/spacing_16"
+            android:layout_marginStart="@dimen/spacing_24"
+            android:layout_marginEnd="@dimen/spacing_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/outboundLeg" />
 
         <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/inboundLeg" />
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/inboundLeg"
+                android:layout_marginTop="@dimen/spacing_8"/>
 
         <ImageView
             android:id="@+id/ratingImage"
-            android:layout_width="@dimen/reatingImage"
-            android:layout_height="@dimen/reatingImage"
-            android:layout_marginStart="@dimen/spacing_16"
-            android:layout_marginTop="@dimen/spacing_24"
-            android:layout_marginBottom="@dimen/spacing_24"
+            android:layout_width="@dimen/ratingImage"
+            android:layout_height="@dimen/ratingImage"
+            android:layout_marginStart="@dimen/spacing_24"
+            android:layout_marginTop="@dimen/spacing_16"
+            android:layout_marginBottom="@dimen/spacing_16"
             android:contentDescription="@string/rating_image_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +89,7 @@
             style="@style/TextMediumBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_8"
+            android:layout_marginStart="@dimen/spacing_4"
             android:gravity="bottom"
             app:layout_constraintBottom_toBottomOf="@+id/ratingImage"
             app:layout_constraintStart_toEndOf="@+id/ratingImage"
@@ -74,47 +97,26 @@
             tools:text="5.9" />
 
         <TextView
-            android:id="@+id/price"
-            style="@style/TextMediumBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_16"
-            app:layout_constraintBottom_toTopOf="@+id/agent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="£1000" />
+                android:id="@+id/price"
+                style="@style/TextMediumBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/agent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="£1000"
+                app:layout_constraintEnd_toEndOf="@+id/inboundLeg"
+                android:layout_marginTop="@dimen/spacing_8"/>
 
         <TextView
-            android:id="@+id/agent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/price"
-            app:layout_constraintTop_toBottomOf="@+id/price"
-            tools:text="via WizzAir.com" />
-
-        <TextView
-            android:id="@+id/chepeast"
-            style="@style/TextExtraInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_16"
-            android:layout_marginTop="@dimen/spacing_8"
-            android:text="@string/chepeast"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/shortest"
-            style="@style/TextExtraInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_8"
-            android:layout_marginEnd="@dimen/spacing_16"
-            android:text="@string/shortest"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                android:id="@+id/agent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/price"
+                app:layout_constraintTop_toBottomOf="@+id/price"
+                tools:text="via WizzAir.com"
+                android:layout_marginBottom="@dimen/spacing_8"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -4,7 +4,7 @@
     <dimen name="textSmall">12sp</dimen>
 
     <dimen name="carrierLogo">50dp</dimen>
-    <dimen name="reatingImage">24dp</dimen>
+    <dimen name="ratingImage">18dp</dimen>
     <dimen name="headerHeight">80dp</dimen>
 
     <dimen name="spacing_24">24dp</dimen>

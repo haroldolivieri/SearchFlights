@@ -26,15 +26,14 @@
         tools:text="BUG - LGW, Wizz Air" />
 
     <ImageView
-        android:id="@+id/carrierLogo"
-        android:layout_width="@dimen/carrierLogo"
-        android:layout_height="@dimen/carrierLogo"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/leg_carrier_image_description"
-        app:layout_constraintBottom_toBottomOf="@+id/placesAndAgent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/departureAndArrivalTime"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            android:id="@+id/carrierLogo"
+            android:layout_width="@dimen/carrierLogo"
+            android:layout_height="@dimen/carrierLogo"
+            android:contentDescription="@string/leg_carrier_image_description"
+            app:layout_constraintBottom_toBottomOf="@+id/placesAndAgent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            app:layout_constraintTop_toTopOf="@+id/departureAndArrivalTime"/>
 
     <TextView
         android:id="@+id/type"

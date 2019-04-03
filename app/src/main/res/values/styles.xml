@@ -9,7 +9,7 @@
     <style name="TextMediumBold">
         <item name="android:textColor">@color/colorTextMedium</item>
         <item name="android:textSize">@dimen/textMedium</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="TextMedium">
@@ -25,7 +25,7 @@
     <style name="TextExtraInfo">
         <item name="android:textColor">@color/colorGreen</item>
         <item name="android:textSize">@dimen/textSmall</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
 </resources>
