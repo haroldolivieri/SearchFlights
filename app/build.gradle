@@ -41,7 +41,7 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:1.1.1"
 
     implementation 'com.github.bumptech.glide:glide:4.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
 
     implementation 'joda-time:joda-time:2.10.1'
