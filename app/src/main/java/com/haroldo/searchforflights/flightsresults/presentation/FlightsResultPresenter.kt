@@ -11,7 +11,6 @@ import org.joda.time.LocalDate
 import javax.inject.Inject
 
 private const val DATE_FORMAT = "yyyy-MM-dd"
-private const val FIRST_PAGE = 0
 
 class FlightsResultPresenter @Inject constructor(
     private val resultsInteractor: SearchFlightsInteractor,

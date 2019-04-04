@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         }
     }
 
+    private fun performInjections() {
+        FlightsResultComponentHolder.getComponent(this).inject(this)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ITEMS_COUNT_TEXT, resultsCounter.text.toString())
@@ -44,10 +48,6 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         resultsCounter.text = savedInstanceState?.getString(ITEMS_COUNT_TEXT)
-    }
-
-    private fun performInjections() {
-        FlightsResultComponentHolder.getComponent(this).inject(this)
     }
 
     override fun onDestroy() {

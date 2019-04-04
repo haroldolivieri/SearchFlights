@@ -35,7 +35,6 @@ class FlightsResultAdapter @Inject constructor(
             addLoading()
         }
 
-//        notifyDataSetChanged()
         calculateDiff(newItems)
     }
 
@@ -75,9 +74,6 @@ class FlightsResultAdapter @Inject constructor(
         }
     }
 
-    /**
-     * Renders only the changed parts of the calculated diffs
-     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (holder is ItineraryViewHolder) {
             if (payloads.isEmpty()) {
