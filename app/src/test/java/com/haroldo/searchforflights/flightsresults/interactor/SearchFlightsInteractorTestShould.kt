@@ -5,12 +5,9 @@ import com.haroldo.searchforflights.flightsresults.gateway.SearchFlightsGateway
 import com.haroldo.searchforflights.model.api.ApiResponseSearch
 import com.haroldo.searchforflights.model.api.Status
 import com.haroldo.searchforflights.model.mapper.ItineraryResponseMapper
-import com.haroldo.searchforflights.network.PollingUrlProvider
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
-import io.reactivex.subjects.BehaviorSubject
-import org.joda.time.Period
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeUnit
@@ -23,20 +20,17 @@ class SearchFlightsInteractorTestShould {
     val rule = RxTestRule()
 
     private val gateway: SearchFlightsGateway = mock {
-        on { fetchSearchFlightsResult() }.thenReturn(Single.fromCallable { apiResponse })
+        on { fetchSearchFlightsResult(0, 8) }.thenReturn(Single.fromCallable { apiResponse })
+        on { fetchSearchFlightsResult(1, 8) }.thenReturn(Single.fromCallable { apiResponse })
     }
     private val mapper: ItineraryResponseMapper = mock {
         on { map(any()) }.thenReturn(emptyList())
-    }
-    private val urlChangesSubject = BehaviorSubject.create<Unit>()
-    private val pollingUrlProvider: PollingUrlProvider = mock {
-        on { pollingUrlChanges() }.thenReturn(urlChangesSubject)
     }
 
     private var apiResponse: ApiResponseSearch = givenResponse()
     private val testScheduler = TestScheduler()
 
-    private var interactor = SearchFlightsInteractor(gateway, mapper, testScheduler, pollingUrlProvider)
+    private var interactor = SearchFlightsInteractor(gateway, mapper, testScheduler)
 
     @Test
     fun `do not map data when is not subscribed`() {
@@ -47,7 +41,7 @@ class SearchFlightsInteractorTestShould {
     fun `call gateway after subscription`() {
         interactor.events().test()
 
-        verify(gateway).fetchSearchFlightsResult()
+        verify(gateway).fetchSearchFlightsResult(0, 8)
     }
 
     @Test
@@ -73,16 +67,6 @@ class SearchFlightsInteractorTestShould {
 
         apiResponse = givenResponse(Status.UpdatesComplete)
         testScheduler.advanceTimeBy(100, TimeUnit.SECONDS)
-        verify(mapper).map(any())
-    }
-
-    @Test
-    fun `retry interactor when polling url change`() {
-        interactor.events().test()
-        reset(mapper)
-
-        urlChangesSubject.onNext(Unit)
-
         verify(mapper).map(any())
     }
 

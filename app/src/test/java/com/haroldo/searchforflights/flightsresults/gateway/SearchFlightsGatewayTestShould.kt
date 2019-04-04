@@ -7,6 +7,7 @@ import io.reactivex.subjects.BehaviorSubject
 import org.junit.Test
 
 private const val POLLING_URL = "pollingURL"
+private const val API_KEY = "api_key"
 
 class SearchFlightsGatewayTestShould {
 
@@ -15,13 +16,20 @@ class SearchFlightsGatewayTestShould {
         on { get() }.thenReturn(POLLING_URL)
     }
 
-    private val gateway = SearchFlightsGateway(api, "aip_key", provider)
+    private val gateway = SearchFlightsGateway(api, API_KEY, provider)
 
     @Test
     fun `get data for provider when fetch results called`() {
-        gateway.fetchSearchFlightsResult()
+        gateway.fetchSearchFlightsResult(pageSize = 5, pageIndex = 0)
 
         verify(provider).get()
-        verify(api).poolingResults(POLLING_URL)
+        verify(api).poolingResults(
+            POLLING_URL,
+            apiKey = API_KEY,
+            pageSize = 5,
+            pageIndex = 0,
+            sortOrder = "asc",
+            sortType = "price"
+        )
     }
 }

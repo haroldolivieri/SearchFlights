@@ -15,7 +15,7 @@ class FlightsResultPresenterTestShould {
         on { events(any()) }.thenReturn(subjectSession)
     }
 
-    private val subjectResults = BehaviorSubject.create<Event<List<Itinerary>>>()
+    private val subjectResults = BehaviorSubject.create<Event<Pair<List<Itinerary>, Boolean>>>()
     private val resultsInteractor: SearchFlightsInteractor = mock {
         on { events() }.thenReturn(subjectResults)
     }
@@ -76,7 +76,7 @@ class FlightsResultPresenterTestShould {
         presenter.onAttach(view)
 
         subjectSession.onNext(Event.completedWithoutData())
-        subjectResults.onNext(Event.data(itineraries))
+        subjectResults.onNext(Event.data(Pair(itineraries, false)))
 
         verify(view, never()).hideLoading()
         verify(view).updateItems(eq(itineraries), any())
@@ -87,7 +87,7 @@ class FlightsResultPresenterTestShould {
         presenter.onAttach(view)
 
         subjectSession.onNext(Event.completedWithoutData())
-        subjectResults.onNext(Event.completedWith(itineraries))
+        subjectResults.onNext(Event.completedWith(Pair(itineraries, false)))
 
         verify(view).hideLoading()
         verify(view).updateItems(eq(itineraries), any())
