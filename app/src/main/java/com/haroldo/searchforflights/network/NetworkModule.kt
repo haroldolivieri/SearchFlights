@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 private const val TIMEOUT = 20L
 private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
-private const val BASE_URL = "http://partners.api.skyscanner.net/apiservices/"
+private const val BASE_URL = "https://partners.api.skyscanner.net/apiservices/"
 
 @Module
 class NetworkModule {
