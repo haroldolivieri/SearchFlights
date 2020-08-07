@@ -77,12 +77,9 @@ class FlightsResultPresenter @Inject constructor(
     }
 
     private fun updateItems(pair: Pair<List<Itinerary>, Boolean>) {
-        val (itineraries, shouldShowLoading) = pair
-        val results = if (shouldShowLoading) {
-            mutableListOf<Itinerary?>().apply {
-                addAll(itineraries)
-                add(null)
-            }
+        val (itineraries, lastPageAlreadyLoaded) = pair
+        val results = if (!lastPageAlreadyLoaded) {
+            itineraries + listOf(null)
         } else {
             itineraries
         }

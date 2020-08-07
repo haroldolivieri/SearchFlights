@@ -79,7 +79,7 @@ class FlightsResultPresenterTestShould {
         subjectResults.onNext(Event.data(Pair(itineraries, false)))
 
         verify(view, never()).hideLoading()
-        verify(view).updateItems(eq(itineraries), any())
+        verify(view).updateItems(eq(itineraries + listOf(null)))
     }
 
     @Test
@@ -90,7 +90,7 @@ class FlightsResultPresenterTestShould {
         subjectResults.onNext(Event.completedWith(Pair(itineraries, false)))
 
         verify(view).hideLoading()
-        verify(view).updateItems(eq(itineraries), any())
+        verify(view).updateItems(eq(itineraries + listOf(null)))
     }
 
     @Test
