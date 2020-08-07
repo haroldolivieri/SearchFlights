@@ -61,7 +61,7 @@ class SearchFlightsInteractor @Inject constructor(
                 }
 
                 Pair(
-                    itineraries.toList().clientSideCalculations(),
+                    itineraries.clientSideCalculations(),
                     this.lastPageAlreadyLoaded
                 )
             }

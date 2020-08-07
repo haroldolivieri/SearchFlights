@@ -4,39 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.haroldo.searchforflights.R
-import com.haroldo.searchforflights.flightsresults.presentation.IS_CHEAPEST
-import com.haroldo.searchforflights.flightsresults.presentation.IS_SHORTEST
-import com.haroldo.searchforflights.flightsresults.presentation.ItinerariesDiffCallback
-import com.haroldo.searchforflights.flightsresults.presentation.RATING
 import com.haroldo.searchforflights.model.Itinerary
 import javax.inject.Inject
 import javax.inject.Provider
 
 private const val VIEW_TYPE_LOADING = 0
 private const val VIEW_TYPE_NORMAL = 1
+const val IS_CHEAPEST = "isCheapest"
+const val IS_SHORTEST = "isShortest"
+const val RATING = "rating"
 
 class FlightsResultAdapter @Inject constructor(
     private val itemPresenterProvider: Provider<ItinerariesItemPresenter>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private var items: MutableList<Itinerary?> = mutableListOf()
-
-    fun updateItems(
-        newItems: List<Itinerary>,
-        isLastPageLoaded: Boolean
-    ) {
-        removeLoadingIfExists()
-
-        this.items = newItems.toMutableList()
-
-        if (!isLastPageLoaded) {
-            addLoading()
-        }
-
-        calculateDiff(newItems)
-    }
+) : ListAdapter<Itinerary, RecyclerView.ViewHolder>(diffUtilCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -49,30 +32,16 @@ class FlightsResultAdapter @Inject constructor(
                 ItineraryViewHolder(view)
             }
         }
-
     }
-
-    override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItineraryViewHolder) {
-            holder.bind(items[position]!!, itemPresenterProvider)
+            holder.bind(getItem(position), itemPresenterProvider)
         }
     }
 
     override fun getItemViewType(position: Int) =
-        if (items[position] == null) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
-
-
-    private fun addLoading() {
-        items.add(null)
-    }
-
-    private fun removeLoadingIfExists() {
-        if (!items.isEmpty() && items[items.lastIndex] == null) {
-            items.removeAt(items.lastIndex)
-        }
-    }
+        if (getItem(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (holder is ItineraryViewHolder) {
@@ -96,12 +65,34 @@ class FlightsResultAdapter @Inject constructor(
         }
     }
 
-    private fun calculateDiff(newItems: List<Itinerary>) {
-        val diffCallback = ItinerariesDiffCallback(
-            oldItineraries = items.toList(),
-            newItineraries = newItems
-        )
-        val diffResult = DiffUtil.calculateDiff(diffCallback, true)
-        diffResult.dispatchUpdatesTo(this)
+    companion object {
+        val diffUtilCallback = object : DiffUtil.ItemCallback<Itinerary>() {
+            override fun areItemsTheSame(oldItem: Itinerary, newItem: Itinerary) =
+                oldItem.inboundLeg.id == newItem.inboundLeg.id &&
+                    oldItem.outboundLeg.id == newItem.outboundLeg.id
+
+            override fun areContentsTheSame(oldItem: Itinerary, newItem: Itinerary) =
+                oldItem == newItem
+
+            override fun getChangePayload(oldItem: Itinerary, newItem: Itinerary): Bundle? {
+                val bundle = Bundle()
+
+                with(bundle) {
+                    if (newItem.cheapest != oldItem.cheapest) {
+                        putBoolean(IS_CHEAPEST, newItem.cheapest)
+                    }
+
+                    if (newItem.shortest != oldItem.shortest) {
+                        putBoolean(IS_SHORTEST, newItem.shortest)
+                    }
+
+                    if (newItem.rating != oldItem.rating) {
+                        putString(RATING, newItem.rating)
+                    }
+                }
+
+                return if (bundle.size() > 0) bundle else null
+            }
+        }
     }
 }

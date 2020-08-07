@@ -8,7 +8,6 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
-
 class ItinerariesItemPresenter @Inject constructor() {
 
     private var view: ItinerariesItemView? = null

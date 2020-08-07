@@ -77,9 +77,19 @@ class FlightsResultPresenter @Inject constructor(
     }
 
     private fun updateItems(pair: Pair<List<Itinerary>, Boolean>) {
+        val (itineraries, shouldShowLoading) = pair
+        val results = if (shouldShowLoading) {
+            mutableListOf<Itinerary?>().apply {
+                addAll(itineraries)
+                add(null)
+            }
+        } else {
+            itineraries
+        }
+
         view?.run {
-            updateItems(pair.first, pair.second)
-            showResultsCount(pair.first.size)
+            updateItems(results)
+            showResultsCount(results.size)
         }
     }
 
@@ -105,6 +115,6 @@ interface FlightsResultView {
     fun showCreateSessionError()
     fun showFetchResultsError()
 
-    fun updateItems(newItems: List<Itinerary>, isLastPageLoaded: Boolean)
+    fun updateItems(newItems: List<Itinerary?>)
     fun showResultsCount(count: Int)
 }

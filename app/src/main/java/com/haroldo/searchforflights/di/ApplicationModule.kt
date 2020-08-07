@@ -34,7 +34,7 @@ class ApplicationModule {
      */
     @Provides
     @ApiKey
-    fun provideApiKey(): String = "ss630745725358065467897349852985"
+    fun provideApiKey(): String = "YOUR API KEY HERE"
 }
 
 @Qualifier

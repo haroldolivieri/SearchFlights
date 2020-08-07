@@ -18,18 +18,6 @@ data class Event<T>(val type: Type, val data: T?, val error: Throwable?) {
         fun completedWithoutData(): Event<Unit> = Event(Type.COMPLETED, null, null)
     }
 
-    val isLoading: Boolean
-        get() = type == Type.LOADING
-
-    val isError: Boolean
-        get() = type == Type.ERROR
-
-    val hasData: Boolean
-        get() = type == Type.IDLE
-
-    val isCompletedData: Boolean
-        get() = type == Type.COMPLETED
-
     enum class Type {
         LOADING, IDLE, ERROR, COMPLETED
     }

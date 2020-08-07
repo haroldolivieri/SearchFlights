@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         presenter.onAttach(this)
 
         with(recyclerView) {
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = LinearLayoutManager(context)
             adapter = resultsAdapter
             addOnScrollListener(onScrollListener)
         }
@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity(), FlightsResultView {
         resultsCounter.text = "$count results"
     }
 
-    override fun updateItems(newItems: List<Itinerary>, isLastPageLoaded: Boolean) {
-        resultsAdapter.updateItems(newItems, isLastPageLoaded)
+    override fun updateItems(newItems: List<Itinerary?>) {
+        resultsAdapter.submitList(newItems)
     }
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
